@@ -1,5 +1,6 @@
 import { Router } from 'express'
 
+import healthRouter from './healthRouter.js'
 import authRouter from './authRouter.js'
 import userRouter from './userRouter.js'
 import postRouter from './postRouter.js'
@@ -10,6 +11,7 @@ import likeRouter from './likeRouter.js'
 const router = Router()
 
 router.use(authRouter)
+router.use('/health', healthRouter)
 router.use('/users', userRouter)
 router.use('/posts', postRouter)
 router.use('/hashtags', hashtagRouter)
