@@ -1,17 +1,14 @@
 {
-  "name": "boilerplate-api",
+  "name": "linkr-api",
   "type": "module",
   "version": "1.0.0",
   "description": "",
-  "main": "app.js",
+  "main": "server.js",
   "scripts": {
     "start": "node ./src/server.js",
     "start:dev": "node ./src/server.js",
     "start:watch": "npx nodemon ./src/server.js",
     "start:prod": "NODE_ENV=production node ./src/server.js",
-    "test": "NODE_ENV=test npx jest --run-in-band",
-    "test:watch": "NODE_ENV=test npx jest --run-in-band --watch",
-    "test:coverage": "npx jest --coverage",
     "deploy": "git push heroku main",
     "logs": "heroku logs --tail",
     "first-start": "git init && npx husky install && npx npm-check-updates --target minor -u"
@@ -25,19 +22,12 @@
     "dotenv": "^14.3.2",
     "express": "^4.17.2",
     "joi": "^17.6.0",
-    "mongodb": "^4.3.1",
     "pg": "^8.7.1",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
-    "@babel/plugin-transform-runtime": "^7.16.10",
-    "@babel/preset-env": "^7.16.11",
-    "babel-jest": "^27.4.6",
     "eslint": "^8.7.0",
-    "faker": "5.5.3",
     "husky": "^7.0.4",
-    "jest": "^27.4.7",
-    "nodemon": "^2.0.15",
-    "supertest": "^6.2.2"
+    "nodemon": "^2.0.15"
   }
 }

@@ -8,7 +8,7 @@ const authUser = async ({ token }) => {
 
 	const session = await sessionRepository.findSessionByToken({ token })
 
-	if (!session) throw new AuthError()
+	if (session === null) throw new AuthError()
 	const { userId } = session
 
 	return userId

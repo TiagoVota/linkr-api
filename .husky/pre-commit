@@ -1,6 +1,5 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
+
 npx eslint src
-# npx eslint tests
-# npm run test

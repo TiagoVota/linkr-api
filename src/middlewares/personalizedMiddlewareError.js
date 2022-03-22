@@ -1,7 +1,7 @@
 import { isPersonalizedError } from '../utils/errorsName.js'
 
 
-const backMiddlewareError = (err, req, res, next) => {
+const personalizedMiddlewareError = (err, req, res, next) => {
 	const { name: errorName, message, status } = err
 
 	if (isPersonalizedError(errorName)) return res.status(status).send(message)
@@ -10,4 +10,4 @@ const backMiddlewareError = (err, req, res, next) => {
 }
 
 
-export default backMiddlewareError
+export default personalizedMiddlewareError

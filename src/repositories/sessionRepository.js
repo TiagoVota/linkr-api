@@ -2,13 +2,20 @@ import connection from '../database/database.js'
 
 
 const findSessionByToken = async ({ token }) => {
-	const { mongoClient, db } = await connection()
+	const queryStr = `
+		SELECT
+			*
+		FROM
+			sessions
+		WHERE
+			token = $1;
+	`
+	const queryArgs = [token]
 
-	const session = await db.collection('sessions').findOne({ token })
-	mongoClient.close()
+	const sessionResult = await connection.query(queryStr, queryArgs)
 	
-	if (!session) return null
-	return session
+	if (sessionResult.rowCount === 0) return null
+	return sessionResult.rows[0]
 }
 
 

@@ -1,4 +1,4 @@
-import * as sessionService from '../services/sessionService.js'
+import * as sessionController from '../controllers/sessionController.js'
 
 
 const authMiddleware = async (req, res, next) => {
@@ -6,7 +6,7 @@ const authMiddleware = async (req, res, next) => {
 	const token = authorization?.replace('Bearer ', '')
 
 	try {
-		const userId = await sessionService.authUser({ token })
+		const userId = await sessionController.authUser({ token })
 	
 		res.locals.userId = userId
 		
