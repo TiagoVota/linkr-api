@@ -1,11 +1,10 @@
 import { Router } from 'express'
+import { signUp } from '../controllers/userController.js'
+import { schemaValidation } from '../middlewares/schemaValidationMiddleware.js'
+import userSchema from '../schemas/userSchema.js'
 
-// import * as userRouter from '../controllers/userRouter.js'
+const userRouter = new Router()
 
+userRouter.post('/sign-up', schemaValidation(userSchema), signUp)
 
-const router = new Router()
-
-// router.post('', userRouter.controllerFunction)
-
-
-export default router
+export default userRouter

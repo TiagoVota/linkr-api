@@ -11,7 +11,7 @@
     "start:prod": "NODE_ENV=production node ./src/server.js",
     "deploy": "git push heroku main",
     "logs": "heroku logs --tail",
-		"git:update": "git add . && git status",
+    "git:update": "git add . && git status",
     "first-start": "git init && npx husky install && npx npm-check-updates --target minor -u"
   },
   "keywords": [],
@@ -24,6 +24,7 @@
     "express": "^4.17.3",
     "joi": "^17.6.0",
     "pg": "^8.7.3",
+    "string-strip-html": "^9.1.7",
     "uuid": "^8.3.2"
   },
   "devDependencies": {
