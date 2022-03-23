@@ -16,7 +16,7 @@ CREATE TABLE "posts" (
 	"id" SERIAL PRIMARY KEY NOT NULL,
 	"userId" INTEGER NOT NULL REFERENCES users("id"),
 	"link" TEXT NOT NULL,
-	"message" TEXT
+	"message" TEXT,
 	"createDate" TIMESTAMP NOT NULL DEFAULT NOW()
 );
 
