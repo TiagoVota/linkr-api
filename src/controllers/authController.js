@@ -17,7 +17,11 @@ export async function login(req, res, next) {
     const token = uuid()
     await authRepository.createSession(user.rows[0].id, token)
 
-    res.status(200).send({ token })
+				const authDetails = (user.rows[0])
+				delete authDetails.password
+				delete authDetails.email
+
+    res.status(200).send({authDetails, token})
   } catch (error) {
     next(error)
   }
