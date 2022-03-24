@@ -5,20 +5,20 @@ import { sanitizeInput } from '../helpers/validationHelper.js'
 import SchemaError from '../errors/SchemaError.js'
 
 function schemaValidation(schema) {
-  return (req, res, next) => {
-    const body = sanitizeInput(req.body)
+	return (req, res, next) => {
+		const body = sanitizeInput(req.body)
 
-    const errors = validationErrors({
-      objectToValid: body,
-      objectValidation: schema
-    })
+		const errors = validationErrors({
+			objectToValid: body,
+			objectValidation: schema
+		})
 
-    if (errors) throw new SchemaError(errors)
+		if (errors) throw new SchemaError(errors)
 
-    next()
-  }
+		next()
+	}
 }
 
 export {
-  schemaValidation,
+	schemaValidation,
 }

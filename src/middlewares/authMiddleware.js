@@ -2,19 +2,19 @@ import * as sessionController from '../controllers/authController.js'
 
 
 const authMiddleware = async (req, res, next) => {
-  const { headers: { authorization } } = req
-  const token = authorization?.replace('Bearer ', '')
+	const { headers: { authorization } } = req
+	const token = authorization?.replace('Bearer ', '')
 
-  try {
-    const userId = await sessionController.authUser({ token })
+	try {
+		const userId = await sessionController.authUser({ token })
 
-    res.locals.userId = userId
+		res.locals.userId = userId
 
-    next()
+		next()
 
-  } catch (error) {
-    next(error)
-  }
+	} catch (error) {
+		next(error)
+	}
 }
 
 
