@@ -30,6 +30,8 @@ const findPosts = async ({ limit }) => {
 			posts AS p
 			JOIN users AS u ON p."userId" = u.id
 			JOIN links AS l ON p."linkId" = l.id
+		ORDER BY
+			p."createDate" DESC
 		LIMIT
 			${limit};
 	`

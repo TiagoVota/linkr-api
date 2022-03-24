@@ -6,7 +6,7 @@ import { authRepository } from '../repositories/authRepository.js'
 import AuthError from '../errors/AuthError.js'
 
 
-const authUser = async ({ token }) => {
+async function authUser({ token }) {
 	if (!token) throw new AuthError(`'${token}' has invalid token syntax!`)
 
 	const session = await authRepository.findSessionByToken({ token })
