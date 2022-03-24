@@ -4,6 +4,7 @@ import { sanitizeInput } from '../helpers/validationHelper.js'
 
 import SchemaError from '../errors/SchemaError.js'
 
+
 function schemaValidation(schema) {
 	return (req, res, next) => {
 		const body = sanitizeInput(req.body)
@@ -18,6 +19,7 @@ function schemaValidation(schema) {
 		next()
 	}
 }
+
 
 export {
 	schemaValidation,
