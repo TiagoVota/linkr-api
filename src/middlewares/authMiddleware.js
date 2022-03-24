@@ -1,4 +1,4 @@
-import * as sessionController from '../controllers/authController.js'
+import * as authController from '../controllers/authController.js'
 
 
 const authMiddleware = async (req, res, next) => {
@@ -6,7 +6,7 @@ const authMiddleware = async (req, res, next) => {
 	const token = authorization?.replace('Bearer ', '')
 
 	try {
-		const userId = await sessionController.authUser({ token })
+		const userId = await authController.authUser({ token })
 
 		res.locals.userId = userId
 

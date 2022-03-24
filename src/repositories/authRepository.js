@@ -1,9 +1,10 @@
 import connection from '../database/database.js'
 
+
 async function login(email) {
 	const queryStr = `
     SELECT * FROM users
-    WHERE email=$1
+    WHERE email=$1;
   `
 	const queryArgs = [email]
 
@@ -15,7 +16,7 @@ async function createSession(id, token) {
 	const queryStr = `
     INSERT INTO sessions
       ("userId", token)
-    VALUES ($1, $2)
+    VALUES ($1, $2);
   `
 	const queryArgs = [id, token]
 
@@ -25,8 +26,12 @@ async function createSession(id, token) {
 
 const findSessionByToken = async ({ token }) => {
 	const queryStr = `
-		SELECT * FROM sessions
-		WHERE token = $1;
+		SELECT
+			*
+		FROM
+			sessions
+		WHERE
+			token = $1;
 	`
 	const queryArgs = [token]
 
@@ -36,7 +41,9 @@ const findSessionByToken = async ({ token }) => {
 	return sessionResult.rows[0]
 }
 
+
 export const authRepository = {
 	login,
-	createSession
+	createSession,
+	findSessionByToken,
 }
