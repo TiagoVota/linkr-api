@@ -1,5 +1,6 @@
 import pg from 'pg'
 
+
 const { Pool } = pg
 
 const {
@@ -29,5 +30,6 @@ const devConfig = {
 const databaseConfig = (NODE_ENV === 'production') ? prodConfig : devConfig
 
 const connection = new Pool(databaseConfig)
+
 
 export default connection
