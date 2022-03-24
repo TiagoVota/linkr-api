@@ -16,7 +16,6 @@ export async function createPost(req, res, next) {
 
     res.status(200).send({})
   } catch (error) {
-    // console.log(error)
     next(error)
   }
 }

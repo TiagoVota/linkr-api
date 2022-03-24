@@ -16,7 +16,7 @@ async function createPost(url, title, description, image, userId, message) {
 			($5, (SELECT id FROM link), $6)
 	`
 	const queryArgs = [url, title, description, image, userId, message]
-  
+
 	const result = await connection.query(queryStr, queryArgs)
 	return result
   }
