@@ -1,11 +1,10 @@
 import { Router } from 'express'
+import { createPost } from '../controllers/postController.js'
+import { schemaValidation } from '../middlewares/schemaValidationMiddleware.js'
+import postSchema from '../schemas/postSchema.js'
 
-// import * as postRouter from '../controllers/postRouter.js'
+const postRouter = new Router()
 
+postRouter.post('/posts', schemaValidation(postSchema), createPost)
 
-const router = new Router()
-
-// router.post('', postRouter.controllerFunction)
-
-
-export default router
+export default postRouter

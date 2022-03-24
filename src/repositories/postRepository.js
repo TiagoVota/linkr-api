@@ -1,19 +1,18 @@
 import connection from '../database/database.js'
 
 
-const repositoryFunction = async ({ email, name, age }) => {
+async function createPost(link, message) {
 	const queryStr = `
-	
+	  INSERT INTO posts
+		("userId", token)
+	  VALUES ($1, $2)
 	`
-	const queryArgs = []
-
-
+	const queryArgs = [link, message]
+  
 	const result = await connection.query(queryStr, queryArgs)
-
 	return result
-}
+  }
 
-
-export {
-	repositoryFunction,
-}
+  export const postRepository = {
+	createPost,
+  }
