@@ -8,11 +8,15 @@ async function createPost(url, title, description, image, userId, message) {
 			VALUES  
 				($1, $2, $3, $4)
 	  		RETURNING id
+		),
+		post as (
+			INSERT INTO posts 
+				("userId", "linkId", message)
+			VALUES
+				($5, (SELECT id FROM link), $6)
+			RETURNING id
 		)
-		INSERT INTO posts 
-			("userId", "linkId", message)
-		VALUES
-			($5, (SELECT id FROM link), $6)
+		SELECT id FROM post;
 	`
 	const queryArgs = [url, title, description, image, userId, message]
 
