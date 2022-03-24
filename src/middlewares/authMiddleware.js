@@ -1,20 +1,35 @@
-import * as sessionController from '../controllers/authController.js'
+import * as authController from '../controllers/authController.js'
+
+import { validationErrors } from '../validations/handleValidation.js'
+
+import { tokenSchema } from '../schemas/authSchema.js'
+
+import AuthError from '../errors/AuthError.js'
 
 
 const authMiddleware = async (req, res, next) => {
-  const { headers: { authorization } } = req
-  const token = authorization?.replace('Bearer ', '')
+	const { headers: { authorization } } = req
+	const token = authorization?.replace('Bearer ', '')
 
-  try {
-    const userId = await sessionController.authUser({ token })
+	try {
+		const errors = validationErrors({
+			objectToValid: { token },
+			objectValidation: tokenSchema
+		})
 
-    res.locals.userId = userId
+		if (!token || errors) {
+			throw new AuthError(`'${token}' has invalid token syntax!`)
+		}
+	
+		const userId = await authController.authUser({ token })
 
-    next()
+		res.locals.userId = userId
 
-  } catch (error) {
-    next(error)
-  }
+		next()
+
+	} catch (error) {
+		next(error)
+	}
 }
 
 

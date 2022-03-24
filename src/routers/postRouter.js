@@ -1,11 +1,15 @@
 import { Router } from 'express'
 
-// import * as postRouter from '../controllers/postRouter.js'
+import * as postController from '../controllers/postController.js'
+
+import authMiddleware from '../middlewares/authMiddleware.js'
 
 
 const router = new Router()
 
-// router.post('', postRouter.controllerFunction)
+router.get('/timeline', authMiddleware, postController.getTimelinePosts)
+
+// router.post('', postController.controllerFunction)
 
 
 export default router
