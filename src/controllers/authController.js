@@ -1,8 +1,6 @@
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
-
 import { authRepository } from '../repositories/authRepository.js'
-
 import AuthError from '../errors/AuthError.js'
 
 

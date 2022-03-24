@@ -1,6 +1,5 @@
 import connection from '../database/database.js'
 
-
 async function createPost(url, title, description, image, userId, message) {
 	const queryStr = `
 		with link as (
