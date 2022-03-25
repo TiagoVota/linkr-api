@@ -17,7 +17,4 @@ router.use(postRouter)
 router.use(hashtagRouter)
 router.use('/likes', likeRouter)
 
-router.use(userRouter)
-
-
 export default router
