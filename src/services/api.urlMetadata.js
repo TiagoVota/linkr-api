@@ -1,28 +1,25 @@
 import urlMetadata from 'url-metadata'
 
-
 const getUrl = async (url) => {
 	let urlInfo = {}
-	
-	await urlMetadata(url)
-		.then((data) => {
-			const image = data['twitter:image'] || data.image || data['og:image']
 
+	const response = await urlMetadata(url)
+	try {
+		const image = response['twitter:image'] || response.image || response['og:image']
 			urlInfo = {
-				url: data.url,
-				title: data.title,
-				description: data.description,
+				url: response.url,
+				title: response.title,
+				description: response.description,
 				image,
 			}
-		})
-		.catch(error => {
-			urlInfo = null
-			console.log('url-metadata error:\n', error)
-		})
+	} catch (error) {
+		urlInfo = null
+		console.log('url-metadata error:\n', error)
+	}
 
+	// console.log(urlInfo)
 	return urlInfo
 }
-
 
 export {
 	getUrl,
