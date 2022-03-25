@@ -12,7 +12,7 @@ const router = Router()
 
 router.use(authRouter)
 router.use('/health', healthRouter)
-router.use('/users', userRouter)
+//router.use('/users', userRouter)
 router.use('/posts', postRouter)
 router.use('/hashtags', hashtagRouter)
 router.use('/likes', likeRouter)
