@@ -2,7 +2,7 @@ import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 import { getUrl } from '../services/api.urlMetadata.js'
 
-export async function createPost(req, res, next) {
+async function createPost(req, res, next) {
   const postInfo = req.body
   const userId = res.locals.userId
   const info = await getUrl(postInfo.link)
@@ -23,4 +23,22 @@ export async function createPost(req, res, next) {
   } catch (error) {
     next(error)
   }
+}
+
+async function getTimelinePosts(req, res, next) {
+	const POSTS_LIMIT = 20
+
+	try {
+		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+
+		return res.status(200).send(postList)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
+export {
+	createPost, getTimelinePosts,
 }

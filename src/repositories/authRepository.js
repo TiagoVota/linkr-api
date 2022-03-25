@@ -4,7 +4,7 @@ import connection from '../database/database.js'
 async function login(email) {
 	const queryStr = `
     SELECT * FROM users
-    WHERE email=$1
+    WHERE email=$1;
   `
 	const queryArgs = [email]
 
@@ -16,7 +16,7 @@ async function createSession(id, token) {
 	const queryStr = `
     INSERT INTO sessions
       ("userId", token)
-    VALUES ($1, $2)
+    VALUES ($1, $2);
   `
 	const queryArgs = [id, token]
 
