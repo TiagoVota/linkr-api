@@ -1,15 +1,13 @@
 import { Router } from 'express'
-
-import * as postController from '../controllers/postController.js'
-
+import { createPost, getTimelinePosts } from '../controllers/postController.js'
 import authMiddleware from '../middlewares/authMiddleware.js'
+import { schemaValidation } from '../middlewares/schemaValidationMiddleware.js'
+import postSchema from '../schemas/postSchema.js'
 
+const postRouter = new Router()
 
-const router = new Router()
+postRouter.use(authMiddleware)
+postRouter.post('/posts', schemaValidation(postSchema), createPost)
+postRouter.get('/timeline', getTimelinePosts)
 
-router.get('/timeline', authMiddleware, postController.getTimelinePosts)
-
-// router.post('', postController.controllerFunction)
-
-
-export default router
+export default postRouter

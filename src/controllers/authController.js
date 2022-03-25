@@ -1,12 +1,10 @@
 import bcrypt from 'bcrypt'
 import { v4 as uuid } from 'uuid'
-
 import { authRepository } from '../repositories/authRepository.js'
-
 import AuthError from '../errors/AuthError.js'
 
 
-async function authUser({ token }) {
+const authUser = async ({ token }) => {
 	if (!token) throw new AuthError(`'${token}' has invalid token syntax!`)
 
 	const session = await authRepository.findSessionByToken({ token })

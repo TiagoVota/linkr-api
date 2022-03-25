@@ -1,18 +1,28 @@
 import connection from '../database/database.js'
 
-
-const repositoryFunction = async ({ email, name, age }) => {
+async function createPost(url, title, description, image, userId, message) {
 	const queryStr = `
-	
+		with link as (
+			INSERT INTO links
+				(url, title, description, image)
+			VALUES  
+				($1, $2, $3, $4)
+	  		RETURNING id
+		),
+		post as (
+			INSERT INTO posts 
+				("userId", "linkId", message)
+			VALUES
+				($5, (SELECT id FROM link), $6)
+			RETURNING id
+		)
+		SELECT id FROM post;
 	`
-	const queryArgs = []
-
+	const queryArgs = [url, title, description, image, userId, message]
 
 	const result = await connection.query(queryStr, queryArgs)
-
 	return result
-}
-
+  }
 
 const findPosts = async ({ limit }) => {
 	const queryStr = `
@@ -42,6 +52,6 @@ const findPosts = async ({ limit }) => {
 }
 
 
-export {
-	findPosts,
-}
+export const postRepository = {
+	createPost, findPosts
+  }

@@ -1,11 +1,10 @@
 import { Router } from 'express'
+import authMiddleware from '../middlewares/authMiddleware.js'
+import { schemaValidation } from '../middlewares/schemaValidationMiddleware.js'
 
-// import * as hashtagRouter from '../controllers/hashtagRouter.js'
+const hashtagRouter = new Router()
+
+hashtagRouter.use(authMiddleware)
 
 
-const router = new Router()
-
-// router.post('', hashtagRouter.controllerFunction)
-
-
-export default router
+export default hashtagRouter
