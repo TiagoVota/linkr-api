@@ -16,13 +16,26 @@ async function createPost(req, res, next) {
     const postId = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)  
 
     if (hashtags !== null) {
-      await hashtagRepository.insertHashtag(hashtags, postId.rows[0].id)
+        let hashtagExist = false
+        let hashtagsFound = []
+        const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
+
+        hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
+
+        console.log(hashtagsFound)
+  
+        // if (resultHashtag.rowCount !== 0) hashtagExist = true
+  
+        // await hashtagRepository.insertHashtag(hashtags, postId.rows[0].id, hashtagExist, resultHashtag)
+  
     }
 
-    res.status(200).send({})
+    res.sendStatus(200)
   } catch (error) {
     next(error)
   }
+    res.sendStatus(200)
+
 }
 
 async function getTimelinePosts(req, res, next) {
