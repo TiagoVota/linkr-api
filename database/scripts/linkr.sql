@@ -87,7 +87,7 @@ ALTER TABLE "posts" ADD CONSTRAINT "posts_fk0" FOREIGN KEY ("userId") REFERENCES
 ALTER TABLE "posts" ADD CONSTRAINT "posts_fk1" FOREIGN KEY ("linkId") REFERENCES "links"("id");
 
 
-ALTER TABLE "hashtagsPosts" ADD CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id");
+ALTER TABLE "hashtagsPosts" ADD CONSTRAINT "hashtagsPosts_fk0" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
 ALTER TABLE "hashtagsPosts" ADD CONSTRAINT "hashtagsPosts_fk1" FOREIGN KEY ("hashtagId") REFERENCES "hashtags"("id");
 
 ALTER TABLE "likes" ADD CONSTRAINT "likes_fk0" FOREIGN KEY ("userId") REFERENCES "users"("id");

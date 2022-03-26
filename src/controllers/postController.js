@@ -38,8 +38,24 @@ async function getTimelinePosts(req, res, next) {
   }
 }
 
+async function deletePost(req, res) {
+	const { id } = req.params
+
+	try {
+		const result = await postRepository.selectPost(id, res.locals.userId)
+		if(result.rowCount === 0) {
+			return res.sendStatus(401)
+		}
+		await postRepository.deletePost(id)
+		res.sendStatus(200)
+	} catch (error) {
+		console.log(error)
+		res.sendStatus(500)
+	}
+}
 
 export {
-  createPost,
-  getTimelinePosts,
+	createPost, 
+	getTimelinePosts, 
+	deletePost
 }
