@@ -68,9 +68,26 @@ async function deletePost(id) {
 	`, [id])
 }
 
+async function findOnePost(id) {
+	return connection.query(`
+		SELECT * FROM posts
+		WHERE id = $1
+	`, [id])
+}
+
+async function updatePost(id, message) {
+	return connection.query(`
+		UPDATE posts
+			SET message=$1
+			WHERE id=$2
+	`, [message, id])
+}
+
 export const postRepository = {
 	createPost, 
 	findPosts, 
 	selectPost, 
-	deletePost
-  }
+	deletePost,
+	findOnePost,
+	updatePost
+}
