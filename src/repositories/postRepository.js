@@ -1,7 +1,7 @@
 import connection from '../database/database.js'
 
 async function createPost(url, title, description, image, userId, message) {
-	const queryStr = `
+  const queryStr = `
 		with link as (
 			INSERT INTO links
 				(url, title, description, image)
@@ -18,14 +18,14 @@ async function createPost(url, title, description, image, userId, message) {
 		)
 		SELECT id FROM post;
 	`
-	const queryArgs = [url, title, description, image, userId, message]
+  const queryArgs = [url, title, description, image, userId, message]
 
-	const result = await connection.query(queryStr, queryArgs)
-	return result
-  }
+  const result = await connection.query(queryStr, queryArgs)
+  return result
+}
 
 const findPosts = async ({ limit }) => {
-	const queryStr = `
+  const queryStr = `
 		SELECT
 			p.id AS "postId",
 			p."userId",
@@ -46,22 +46,22 @@ const findPosts = async ({ limit }) => {
 			${limit};
 	`
 
-	const postsResult = await connection.query(queryStr)
+  const postsResult = await connection.query(queryStr)
 
-	return postsResult.rows
+  return postsResult.rows
 }
 
 async function selectPost(id, userId) {
-	return connection.query(`
+  return connection.query(`
 		SELECT *
 			FROM posts
 			WHERE id=$1
 			AND "userId"=$2
-	`, [id,userId])
+	`, [id, userId])
 }
 
 async function deletePost(id) {
-	return connection.query(`
+  return connection.query(`
 		DELETE
 			FROM posts
 			WHERE id=$1
