@@ -24,6 +24,16 @@ async function createInsertHashtag(hashtags, postId) {
   }
 }
 
+async function getTrendingHashtags(req, res, next) {
+  try {
+    const hashtags = await hashtagRepository.getHashtags()
+
+    res.send(hashtags)
+  } catch (error) {
+    next(error)
+  }
+}
+
 export {
-	createInsertHashtag,
+	createInsertHashtag, getTrendingHashtags,
 }

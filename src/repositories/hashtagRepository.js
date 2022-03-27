@@ -35,7 +35,7 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
 	}
 
 	return result
-  }
+}
 
   async function searchHashtag(hashtags) {
 	const queryStr = `
@@ -47,14 +47,25 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
 		let queryArgs = [hashtags[i]]
 		resultHashtag.push(await connection.query(queryStr, queryArgs))
 	}
-	// console.log(resultHashtag)
-	// console.log(resultHashtag[0].rows)
-	// console.log(resultHashtag[1].rows)
-	// console.log(resultHashtag[0].rowCount)
-	// console.log(resultHashtag[0].fields)
 	return resultHashtag
 }
 
-  export const hashtagRepository = {
-	insertHashtag, searchHashtag
-  }
+async function getHashtags() {
+  const queryStr = `
+    SELECT hashtags.id, hashtags.name
+    FROM "hashtagsPosts" h
+    JOIN hashtags ON h."hashtagId"=hashtags.id
+    GROUP BY hashtags.name, h."hashtagId", hashtags.id
+    ORDER BY COUNT(h."hashtagId") DESC
+    LIMIT 10
+  `
+  const result = await connection.query(queryStr)
+  return result.rows
+}
+
+
+export const hashtagRepository = {
+  insertHashtag,
+  searchHashtag,
+  getHashtags
+}
