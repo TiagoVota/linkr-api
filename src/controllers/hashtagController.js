@@ -18,9 +18,9 @@ async function createInsertHashtag(hashtags, postId) {
 
         filteredHashtags = hashtags.filter(hashtag => !hashtagsFoundName.includes(hashtag))
       }
-      await hashtagRepository.insertHashtag(filteredHashtags, hashtagsFoundId, postId.rows[0].id)
+      await hashtagRepository.insertHashtag(filteredHashtags, hashtagsFoundId, postId)
   } catch (error) {
-    next(error)
+    console.log(error)
   }
 }
 

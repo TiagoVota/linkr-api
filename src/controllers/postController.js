@@ -14,10 +14,11 @@ async function createPost(req, res, next) {
   }
 
   try {
-    const postId = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)
+    const postResult = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)
 
     if (hashtags !== null) {
-      createInsertHashtag(hashtags, postId)
+		const postId = postResult.rows[0].id
+    	createInsertHashtag(hashtags, postId)
     }
 
   } catch (error) {
@@ -59,17 +60,27 @@ async function updatePost(req, res) {
 	const { id } = req.params
 	const { message } = req.body
 
+	let hashtags = []
+	if (message !== '') {
+	  hashtags = message?.match(/#[a-z]+/gi)
+	}
+
 	try {
 		const { rows: [post] } = await postRepository.findOnePost(id)
 
 		if(!post) {
-			return res.SendStatus(404)
+			return res.sendStatus(404)
 		}
 		if(post.userId != res.locals.userId) {
-			return res.SendStatus(422)
+			return res.sendStatus(422)
 		}
 
 		await postRepository.updatePost(id, message)
+
+		if (hashtags !== null) {
+			createInsertHashtag(hashtags, id)
+		}
+
 		res.sendStatus(200)
 	} catch (error) {
 		console.log(error)
