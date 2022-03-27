@@ -1,6 +1,7 @@
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 import { getUrl } from '../services/api.urlMetadata.js'
+import { createInsertHashtag } from './hashtagController.js'
 
 async function createPost(req, res, next) {
   const postInfo = req.body
@@ -16,26 +17,13 @@ async function createPost(req, res, next) {
     const postId = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)  
 
     if (hashtags !== null) {
-        let hashtagExist = false
-        let hashtagsFound = []
-        const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
-
-        hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
-
-        console.log(hashtagsFound)
-  
-        // if (resultHashtag.rowCount !== 0) hashtagExist = true
-  
-        // await hashtagRepository.insertHashtag(hashtags, postId.rows[0].id, hashtagExist, resultHashtag)
-  
+      createInsertHashtag(hashtags, postId)
     }
 
-    res.sendStatus(200)
   } catch (error) {
     next(error)
   }
     res.sendStatus(200)
-
 }
 
 async function getTimelinePosts(req, res, next) {
