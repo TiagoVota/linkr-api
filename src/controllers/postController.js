@@ -54,8 +54,31 @@ async function deletePost(req, res) {
 	}
 }
 
+async function updatePost(req, res) {
+	const { id } = req.params
+	const { message } = req.body
+
+	try {
+		const { rows: [post] } = await postRepository.findOnePost(id)
+
+		if(!post) {
+			return res.SendStatus(404)
+		}
+		if(post.userId != res.locals.userId) {
+			return res.SendStatus(422)
+		}
+
+		await postRepository.updatePost(id, message)
+		res.sendStatus(200)
+	} catch (error) {
+		console.log(error)
+		res.sendStatus(500)
+	}
+}
+
 export {
 	createPost, 
 	getTimelinePosts, 
-	deletePost
+	deletePost,
+	updatePost
 }
