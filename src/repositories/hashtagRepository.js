@@ -1,7 +1,7 @@
 import connection from '../database/database.js'
 
 async function insertHashtag(filteredHashtags, hashtagsFoundId, postId, isUpdate) {
-	let result = [];
+	let result = []
 	const queryStr = `
 		with hashtag as (
 			INSERT INTO hashtags
@@ -16,10 +16,10 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId, isUpdate
 				($2, (SELECT id FROM hashtag));
 		`
 
-		for (let i = 0; i < filteredHashtags.length; i++) {
-			let queryArgs = [filteredHashtags[i], postId]
-			result.push(await connection.query(queryStr, queryArgs))
-		}
+	for (let i = 0; i < filteredHashtags.length; i++) {
+		let queryArgs = [filteredHashtags[i], postId]
+		result.push(await connection.query(queryStr, queryArgs))
+	}
 
 	if (hashtagsFoundId) {
 		const queryStr = `
@@ -68,8 +68,8 @@ async function deleteHashtagsPosts(hashtags, postId) {
 			DELETE FROM "hashtagsPosts"
 			WHERE "postId" = $1;
 		`
-		const queryArgs = [postId]
-		resultHashtag = await connection.query(queryStr, queryArgs)
+			const queryArgs = [postId]
+			resultHashtag = await connection.query(queryStr, queryArgs)
 		} catch (error) {
 			console.log(error)
 		}
@@ -83,7 +83,7 @@ async function searchHashtag(hashtags) {
 		SELECT id, name FROM hashtags
 		WHERE name=$1;
 	`
-	let resultHashtag = [];
+	let resultHashtag = []
 	for (let i = 0; i < hashtags.length; i++) {
 		let queryArgs = [hashtags[i]]
 		resultHashtag.push(await connection.query(queryStr, queryArgs))
@@ -105,7 +105,7 @@ async function searchHashtagsPosts(postId) {
 }
 
 async function getHashtags() {
-  const queryStr = `
+	const queryStr = `
     SELECT hashtags.id, hashtags.name
     FROM "hashtagsPosts" h
     JOIN hashtags ON h."hashtagId"=hashtags.id
@@ -113,15 +113,15 @@ async function getHashtags() {
     ORDER BY COUNT(h."hashtagId") DESC
     LIMIT 10
   `
-  const result = await connection.query(queryStr)
-  return result.rows
+	const result = await connection.query(queryStr)
+	return result.rows
 }
 
 
 export const hashtagRepository = {
-  insertHashtag,
-  searchHashtag,
-  getHashtags,
-  deleteHashtagsPosts,
-  searchHashtagsPosts
+	insertHashtag,
+	searchHashtag,
+	getHashtags,
+	deleteHashtagsPosts,
+	searchHashtagsPosts,
 }
