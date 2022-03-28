@@ -1,6 +1,8 @@
 const errorsName = [
 	'AuthError',
+	'ExistentLikeError',
 	'ExampleError',
+	'NoLikeError',
 	'SchemaError',
 ]
 
