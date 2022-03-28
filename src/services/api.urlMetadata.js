@@ -3,8 +3,8 @@ import urlMetadata from 'url-metadata'
 const getUrl = async (url) => {
 	let urlInfo = {}
 
-	const response = await urlMetadata(url)
 	try {
+		const response = await urlMetadata(url)
 		const image = response['twitter:image'] || response.image || response['og:image']
 		urlInfo = {
 			url: response.url,
@@ -17,7 +17,6 @@ const getUrl = async (url) => {
 		console.log('url-metadata error:\n', error)
 	}
 
-	// console.log(urlInfo)
 	return urlInfo
 }
 

@@ -1,6 +1,7 @@
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 import { getUrl } from '../services/api.urlMetadata.js'
+import { createInsertHashtag } from './hashtagController.js'
 
 async function createPost(req, res, next) {
 	const postInfo = req.body
@@ -13,16 +14,17 @@ async function createPost(req, res, next) {
 	}
 
 	try {
-		const postId = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)
+		const postResult = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)
 
 		if (hashtags !== null) {
-			await hashtagRepository.insertHashtag(hashtags, postId.rows[0].id)
+			const postId = postResult.rows[0].id
+			createInsertHashtag(hashtags, postId)
 		}
 
-		res.status(201).send('Created')
 	} catch (error) {
 		next(error)
 	}
+	res.status(201).send('Created')
 }
 
 async function getTimelinePosts(req, res, next) {
@@ -57,24 +59,38 @@ async function deletePost(req, res) {
 async function updatePost(req, res) {
 	const { id } = req.params
 	const { message } = req.body
+	const isUpdate = true
+
+	let hashtags = []
+	if (message !== '') {
+		hashtags = message?.match(/#[a-z]+/gi)
+	}
 
 	try {
 		const { rows: [post] } = await postRepository.findOnePost(id)
 
 		if(!post) {
-			return res.SendStatus(404)
+			return res.sendStatus(404)
 		}
 		if(post.userId != res.locals.userId) {
-			return res.SendStatus(422)
+			return res.sendStatus(422)
 		}
 
 		await postRepository.updatePost(id, message)
+
+		if (hashtags !== []) {
+			createInsertHashtag(hashtags, id, isUpdate)
+		} else {
+			hashtagRepository.deleteHashtagsPosts(hashtags, id)
+		}
+
 		res.sendStatus(200)
 	} catch (error) {
 		console.log(error)
 		res.sendStatus(500)
 	}
 }
+
 
 export {
 	createPost, 
