@@ -15,9 +15,6 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId, isUpdate
 			VALUES
 				($2, (SELECT id FROM hashtag));
 		`
-		// console.log(filteredHashtags)
-		// console.log(filteredHashtags.length)
-		// console.log(hashtagsFoundId)
 
 		for (let i = 0; i < filteredHashtags.length; i++) {
 			let queryArgs = [filteredHashtags[i], postId]
@@ -75,7 +72,6 @@ async function deleteHashtagsPosts(hashtags, postId) {
 		resultHashtag = await connection.query(queryStr, queryArgs)
 		} catch (error) {
 			console.log(error)
-			
 		}
 	}
 

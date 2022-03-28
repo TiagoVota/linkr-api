@@ -8,8 +8,6 @@ async function createInsertHashtag(hashtags, postId, isUpdate) {
     const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
     let hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
 
-
-
     if (hashtagsFound !== []) {
       let hashtagsFoundName = []
 
@@ -22,21 +20,14 @@ async function createInsertHashtag(hashtags, postId, isUpdate) {
       }
 
       const resultHashtagsPostsId = await hashtagRepository.searchHashtagsPosts(postId)
-      // console.log(postId)
-      // console.log(resultHashtagsPostsId.rows)
-      // console.log(resultHashtagsPosts.rows[1])
+
       let hashtagsPostsId = []
       resultHashtagsPostsId.rows.forEach((id, index) => {
         hashtagsPostsId.push(id.hashtagId)
       })
-      // console.log(hashtagsPostsId)
-
 
       let filteredhashtagsFoundId = hashtagsFoundId.filter(id => !hashtagsPostsId.includes(id))
-      // console.log(hashtagsFoundId)
-      // console.log(filteredhashtagsFoundId)
 
-      // console.log(filteredHashtags)
       await hashtagRepository.insertHashtag(filteredHashtags, filteredhashtagsFoundId, postId, isUpdate)
 
       if (isUpdate) {
