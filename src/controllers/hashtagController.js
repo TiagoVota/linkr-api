@@ -4,7 +4,9 @@ import { getUrl } from "../services/api.urlMetadata.js"
 export async function getTrendingHashtags(req, res, next) {
   try {
     const hashtags = await hashtagRepository.getHashtags()
-
+				hashtags.map(tag => {
+					tag.name = tag.name.replace("#", "")
+			})
     res.send(hashtags)
   } catch (error) {
     next(error)
@@ -12,14 +14,17 @@ export async function getTrendingHashtags(req, res, next) {
 }
 
 export async function selectHashtag(req, res) {
-	const { id: hashtagName } = req.params
+	const { id: hashtag } = req.params
+	const hashtagName = '#'+hashtag
 	try {
 		const {rows:result} = await hashtagRepository.getHashtag(hashtagName)
 		const post = []
 		for (const [idx, postArray] of result.entries()) {
 			const url = await getUrl(postArray.url)
 			post.push({
+				postId: result[idx].id,
 				userId: result[idx].userId,
+				hashtagName: result[idx].hashtagName,
     url: url.url,
     title: url.title,
     description: url.description,
