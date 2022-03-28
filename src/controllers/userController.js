@@ -1,5 +1,5 @@
-import { userRepository } from '../repositories/userRepository.js'
 import bcrypt from 'bcrypt'
+import { userRepository } from '../repositories/userRepository.js'
 
 export async function signUp(req, res, next) {
 	const user = req.body
@@ -39,6 +39,20 @@ export async function getUserPosts(req, res, next) {
 		const userPosts = await userRepository.getUserPosts(id)
 
 		return res.status(200).send(userPosts)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+
+export async function getUsers(req, res, next) {
+	const { query: { userName } } = req
+
+	try {
+		const users = await userRepository.findUsers({ name: userName })
+
+		return res.status(200).send(users)
 
 	} catch (error) {
 		next(error)

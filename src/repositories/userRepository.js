@@ -61,7 +61,7 @@ async function getUserPosts(id) {
       l.image
 		FROM
       users AS u
-    	LEFT JOIN posts AS p ON p."userId" = u.id
+			LEFT JOIN posts AS p ON p."userId" = u.id
       LEFT JOIN links AS l ON p."linkId" = l.id
     WHERE u.id=$1
     ORDER BY
@@ -77,10 +77,31 @@ async function getUserPosts(id) {
 }
 
 
+async function findUsers({ name }) {
+	const queryStr = `
+		SELECT
+			id,
+			username,
+			picture
+		FROM
+			users
+		WHERE
+			username ILIKE $1;
+	`
+
+	const queryArgs = [`${name}%`]
+
+	const usersResult = await connection.query(queryStr, queryArgs)
+
+	return usersResult.rows
+}
+
+
 export const userRepository = {
 	signUp,
 	searchEmail,
 	searchUsername,
 	getUserPosts,
-	findUser
+	findUser,
+	findUsers,
 }
