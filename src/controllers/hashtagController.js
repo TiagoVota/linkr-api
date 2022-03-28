@@ -1,19 +1,58 @@
-import { hashtagRepository } from "../repositories/hashtagRepository.js"
+import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { getUrl } from "../services/api.urlMetadata.js"
 
-export async function getTrendingHashtags(req, res, next) {
-  try {
-    const hashtags = await hashtagRepository.getHashtags()
-				hashtags.map(tag => {
-					tag.name = tag.name.replace("#", "")
-			})
-    res.send(hashtags)
-  } catch (error) {
-    next(error)
-  }
+async function createInsertHashtag(hashtags, postId, isUpdate) {
+	try {
+		let filteredHashtags = hashtags
+		let hashtagsFoundId = []
+    
+		const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
+		let hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
+
+		if (hashtagsFound !== []) {
+			let hashtagsFoundName = []
+
+			for(let i = 0; i < hashtagsFound.length; i++) {
+				hashtagsFoundName.push(hashtagsFound[i].rows[0].name)
+				hashtagsFoundId.push(hashtagsFound[i].rows[0].id)
+			}
+
+			filteredHashtags = hashtags.filter(hashtag => !hashtagsFoundName.includes(hashtag))
+		}
+
+		const resultHashtagsPostsId = await hashtagRepository.searchHashtagsPosts(postId)
+
+		let hashtagsPostsId = []
+		resultHashtagsPostsId.rows.forEach((id, index) => {
+			hashtagsPostsId.push(id.hashtagId)
+		})
+
+		let filteredHashtagsFoundId = hashtagsFoundId.filter(id => !hashtagsPostsId.includes(id))
+
+		await hashtagRepository.insertHashtag(filteredHashtags, filteredHashtagsFoundId, postId, isUpdate)
+
+		if (isUpdate) {
+			hashtagRepository.deleteHashtagsPosts(hashtags, postId)
+		}
+	} catch (error) {
+		console.log(error)
+	}
 }
 
-export async function selectHashtag(req, res) {
+async function getTrendingHashtags(req, res, next) {
+	try {
+		const hashtags = await hashtagRepository.getHashtags()
+		hashtags.map(tag => {
+			tag.name = tag.name.replace("#", "")
+	})
+
+		res.send(hashtags)
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function selectHashtag(req, res) {
 	const { id: hashtag } = req.params
 	const hashtagName = '#'+hashtag
 	try {
@@ -39,4 +78,8 @@ export async function selectHashtag(req, res) {
 		console.log(error)
 		res.sendStatus(500)
 	}
+}
+
+export {
+	createInsertHashtag, getTrendingHashtags, selectHashtag
 }

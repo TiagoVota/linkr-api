@@ -1,54 +1,54 @@
 import connection from '../database/database.js'
 
 async function signUp({ email, username, password, picture }) {
-  const queryStr = `
+	const queryStr = `
 		INSERT INTO users
       (email, username, password, picture)
     VALUES
       ($1, $2, $3, $4);
 	`
-  const queryArgs = [email, username, password, picture]
+	const queryArgs = [email, username, password, picture]
 
-  const result = await connection.query(queryStr, queryArgs)
-  return result
+	const result = await connection.query(queryStr, queryArgs)
+	return result
 }
 
 async function searchEmail(email) {
-  const queryStr = `
+	const queryStr = `
     SELECT id FROM users
     WHERE email=$1;
   `
-  const queryArgs = [email]
+	const queryArgs = [email]
 
-  const result = await connection.query(queryStr, queryArgs)
-  return result.rowCount
+	const result = await connection.query(queryStr, queryArgs)
+	return result.rowCount
 }
 
 async function searchUsername(username) {
-  const queryStr = `
+	const queryStr = `
     SELECT id FROM users
     WHERE username=$1;
   `
-  const queryArgs = [username]
+	const queryArgs = [username]
 
-  const result = await connection.query(queryStr, queryArgs)
-  return result.rowCount
+	const result = await connection.query(queryStr, queryArgs)
+	return result.rowCount
 }
 
 async function findUser(id) {
-  const queryStr = `
+	const queryStr = `
     SELECT id
     FROM users
     WHERE id=$1
   `
-  const queryArgs = [id]
+	const queryArgs = [id]
 
-  const result = await connection.query(queryStr, queryArgs)
-  return result.rowCount
+	const result = await connection.query(queryStr, queryArgs)
+	return result.rowCount
 }
 
 async function getUserPosts(id) {
-  const queryStr = `
+	const queryStr = `
 		SELECT
 			u.username,
 			u.picture,
@@ -61,7 +61,7 @@ async function getUserPosts(id) {
       l.image
 		FROM
       users AS u
-    	LEFT JOIN posts AS p ON p."userId" = u.id
+			LEFT JOIN posts AS p ON p."userId" = u.id
       LEFT JOIN links AS l ON p."linkId" = l.id
     WHERE u.id=$1
     ORDER BY
@@ -69,18 +69,39 @@ async function getUserPosts(id) {
     LIMIT 20
 	`
 
-  const queryArgs = [id]
+	const queryArgs = [id]
 
-  const postsResult = await connection.query(queryStr, queryArgs)
+	const postsResult = await connection.query(queryStr, queryArgs)
 
-  return postsResult.rows
+	return postsResult.rows
+}
+
+
+async function findUsers({ name }) {
+	const queryStr = `
+		SELECT
+			id,
+			username,
+			picture
+		FROM
+			users
+		WHERE
+			username ILIKE $1;
+	`
+
+	const queryArgs = [`${name}%`]
+
+	const usersResult = await connection.query(queryStr, queryArgs)
+
+	return usersResult.rows
 }
 
 
 export const userRepository = {
-  signUp,
-  searchEmail,
-  searchUsername,
-  getUserPosts,
-  findUser
+	signUp,
+	searchEmail,
+	searchUsername,
+	getUserPosts,
+	findUser,
+	findUsers,
 }
