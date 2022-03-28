@@ -1,7 +1,7 @@
 import connection from '../database/database.js'
 
 async function insertHashtag(hashtags, postId) {
-  const queryStr = `
+	const queryStr = `
 		with hashtag as (
 			INSERT INTO hashtags
 				(name)
@@ -15,16 +15,16 @@ async function insertHashtag(hashtags, postId) {
 			($2, (SELECT id FROM hashtag))
 		;
 	`
-  let result = [];
-  for (let i = 0; i < hashtags.length; i++) {
-    let queryArgs = [hashtags[i], postId]
-    result.push(await connection.query(queryStr, queryArgs))
-  }
-  return result
+	let result = []
+	for (let i = 0; i < hashtags.length; i++) {
+		let queryArgs = [hashtags[i], postId]
+		result.push(await connection.query(queryStr, queryArgs))
+	}
+	return result
 }
 
 async function getHashtags() {
-  const queryStr = `
+	const queryStr = `
     SELECT hashtags.id, hashtags.name
     FROM "hashtagsPosts" h
     JOIN hashtags ON h."hashtagId"=hashtags.id
@@ -32,12 +32,12 @@ async function getHashtags() {
     ORDER BY COUNT(h."hashtagId") DESC
     LIMIT 10
   `
-  const result = await connection.query(queryStr)
-  return result.rows
+	const result = await connection.query(queryStr)
+	return result.rows
 }
 
 
 export const hashtagRepository = {
-  insertHashtag,
-  getHashtags
+	insertHashtag,
+	getHashtags
 }
