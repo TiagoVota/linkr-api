@@ -1,3 +1,5 @@
+import * as likeController from './likeController.js'
+
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 import { getUrl } from '../services/api.urlMetadata.js'
@@ -32,15 +34,17 @@ async function getTimelinePosts(req, res, next) {
 
 	try {
 		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		
+		const likesPostsList = await likeController.getLikesPosts({ postList })
 
-		return res.status(200).send(postList)
+		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
 		next(error)
 	}
 }
 
-async function deletePost(req, res) {
+async function deletePost(req, res, next) {
 	const { id } = req.params
 
 	try {
@@ -51,12 +55,11 @@ async function deletePost(req, res) {
 		await postRepository.deletePost(id)
 		res.sendStatus(200)
 	} catch (error) {
-		console.log(error)
-		res.sendStatus(500)
+		next(error)
 	}
 }
 
-async function updatePost(req, res) {
+async function updatePost(req, res, next) {
 	const { id } = req.params
 	const { message } = req.body
 	const isUpdate = true
@@ -86,8 +89,7 @@ async function updatePost(req, res) {
 
 		res.sendStatus(200)
 	} catch (error) {
-		console.log(error)
-		res.sendStatus(500)
+		next(error)
 	}
 }
 

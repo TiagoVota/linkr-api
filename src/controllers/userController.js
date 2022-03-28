@@ -1,5 +1,9 @@
 import bcrypt from 'bcrypt'
+
+import * as likeController from './likeController.js'
+
 import { userRepository } from '../repositories/userRepository.js'
+
 
 export async function signUp(req, res, next) {
 	const user = req.body
@@ -38,7 +42,11 @@ export async function getUserPosts(req, res, next) {
 
 		const userPosts = await userRepository.getUserPosts(id)
 
-		return res.status(200).send(userPosts)
+		const likesPostsList = await likeController.getLikesPosts({
+			postList: userPosts
+		})
+
+		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
 		next(error)

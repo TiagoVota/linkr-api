@@ -7,10 +7,10 @@ const getUrl = async (url) => {
 		const response = await urlMetadata(url)
 		const image = response['twitter:image'] || response.image || response['og:image']
 		urlInfo = {
-			url: response.url,
-			title: response.title,
-			description: response.description,
-			image,
+			url: response.url || '',
+			title: response.title || '',
+			description: response.description || '',
+			image: image || '',
 		}
 	} catch (error) {
 		urlInfo = null

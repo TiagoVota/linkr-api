@@ -9,7 +9,7 @@ const postRouter = new Router()
 
 postRouter.use(authMiddleware)
 postRouter.post('/posts', schemaValidation(postSchema), createPost)
-postRouter.get('/timeline', getTimelinePosts)
+postRouter.get('/posts/timeline', getTimelinePosts)
 postRouter.delete('/posts/:id', deletePost)
 postRouter.put('/posts/:id', schemaValidation(updatePostSchema), updatePost)
 
