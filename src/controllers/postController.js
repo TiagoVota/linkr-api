@@ -1,3 +1,5 @@
+import * as likeController from './likeController.js'
+
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 import { getUrl } from '../services/api.urlMetadata.js'
@@ -32,8 +34,10 @@ async function getTimelinePosts(req, res, next) {
 
 	try {
 		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		
+		const likesPostsList = await likeController.getLikesPosts({ postList })
 
-		return res.status(200).send(postList)
+		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
 		next(error)

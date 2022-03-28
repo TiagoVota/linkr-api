@@ -1,19 +1,25 @@
 import connection from '../database/database.js'
 
 
-const repositoryFunction = async ({ email, name, age }) => {
+const findLikesByPostId = async ({ id }) => {
 	const queryStr = `
-	
+		SELECT
+			l."userId",
+			u.username
+		FROM
+			likes AS l
+			JOIN users AS u ON u.id = l."userId"
+		WHERE
+			l."postId" = $1;
 	`
-	const queryArgs = []
+	const queryArgs = [id]
 
+	const likesResult = await connection.query(queryStr, queryArgs)
 
-	const result = await connection.query(queryStr, queryArgs)
-
-	return result
+	return likesResult.rows
 }
 
 
 export {
-	repositoryFunction,
+	findLikesByPostId,
 }
