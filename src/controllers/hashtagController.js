@@ -12,10 +12,9 @@ export async function getTrendingHashtags(req, res, next) {
 }
 
 export async function selectHashtag(req, res) {
-	const { id } = req.params
-
+	const { id: hashtagName } = req.params
 	try {
-		const {rows:result} = await hashtagRepository.getHashtag(id)
+		const {rows:result} = await hashtagRepository.getHashtag(hashtagName)
 		const post = []
 		for (const [idx, postArray] of result.entries()) {
 			const url = await getUrl(postArray.url)

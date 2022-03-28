@@ -43,7 +43,7 @@ async function getHashtag(id){
 		JOIN posts ON posts.id="hashtagsPosts"."postId"
 		JOIN users ON users.id=posts."userId"
 		JOIN links ON links.id=posts."linkId"
-		WHERE hashtags.id=$1
+		WHERE hashtags.name=$1
 	`,[id])
 }
 
