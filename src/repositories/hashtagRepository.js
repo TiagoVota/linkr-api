@@ -1,6 +1,6 @@
 import connection from '../database/database.js'
 
-async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
+async function insertHashtag(filteredHashtags, hashtagsFoundId, postId, isUpdate) {
 	let result = [];
 	const queryStr = `
 		with hashtag as (
@@ -15,6 +15,9 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
 			VALUES
 				($2, (SELECT id FROM hashtag));
 		`
+		// console.log(filteredHashtags)
+		// console.log(filteredHashtags.length)
+		// console.log(hashtagsFoundId)
 
 		for (let i = 0; i < filteredHashtags.length; i++) {
 			let queryArgs = [filteredHashtags[i], postId]
@@ -37,7 +40,49 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
 	return result
 }
 
-  async function searchHashtag(hashtags) {
+async function deleteHashtagsPosts(hashtags, postId) {
+	let resultHashtag = []
+
+	if (hashtags.length !== 0) {
+		try {
+			const hashtagsFound = await searchHashtag(hashtags)
+			let hashtagsFoundId = []
+			let valuesString = ''
+			
+			hashtagsFound.forEach((hashtag, index) => {
+				hashtagsFoundId.push(hashtagsFound[index].rows[0].id)
+				valuesString += `$${index+2}, `
+			})
+			
+			const queryStr = `
+			DELETE FROM "hashtagsPosts"
+			WHERE "postId" = $1
+			AND "hashtagId" NOT IN (${valuesString.slice(0,-2)});
+			`
+			const queryArgs = [postId, ...hashtagsFoundId]
+			resultHashtag = await connection.query(queryStr, queryArgs)
+		} catch (error) {
+			console.log(error)
+		}
+
+	} else {
+		try {
+			const queryStr = `
+			DELETE FROM "hashtagsPosts"
+			WHERE "postId" = $1;
+		`
+		const queryArgs = [postId]
+		resultHashtag = await connection.query(queryStr, queryArgs)
+		} catch (error) {
+			console.log(error)
+			
+		}
+	}
+
+	return resultHashtag
+}
+
+async function searchHashtag(hashtags) {
 	const queryStr = `
 		SELECT id, name FROM hashtags
 		WHERE name=$1;
@@ -47,7 +92,20 @@ async function insertHashtag(filteredHashtags, hashtagsFoundId, postId) {
 		let queryArgs = [hashtags[i]]
 		resultHashtag.push(await connection.query(queryStr, queryArgs))
 	}
+	
 	return resultHashtag
+}
+
+async function searchHashtagsPosts(postId) {
+	const queryStr = `
+		SELECT "hashtagId" FROM "hashtagsPosts"
+		WHERE "postId"=$1;
+	`
+	const queryArgs = [postId]
+
+	const resultHashtagsPosts = await connection.query(queryStr, queryArgs)
+	
+	return resultHashtagsPosts
 }
 
 async function getHashtags() {
@@ -67,5 +125,7 @@ async function getHashtags() {
 export const hashtagRepository = {
   insertHashtag,
   searchHashtag,
-  getHashtags
+  getHashtags,
+  deleteHashtagsPosts,
+  searchHashtagsPosts
 }

@@ -59,6 +59,7 @@ async function deletePost(req, res) {
 async function updatePost(req, res) {
 	const { id } = req.params
 	const { message } = req.body
+	const isUpdate = true
 
 	let hashtags = []
 	if (message !== '') {
@@ -77,8 +78,10 @@ async function updatePost(req, res) {
 
 		await postRepository.updatePost(id, message)
 
-		if (hashtags !== null) {
-			createInsertHashtag(hashtags, id)
+		if (hashtags !== []) {
+			createInsertHashtag(hashtags, id, isUpdate)
+		} else {
+			hashtagRepository.deleteHashtagsPosts(hashtags, id)
 		}
 
 		res.sendStatus(200)

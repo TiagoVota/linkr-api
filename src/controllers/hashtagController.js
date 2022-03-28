@@ -1,13 +1,15 @@
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 
-async function createInsertHashtag(hashtags, postId) {
+async function createInsertHashtag(hashtags, postId, isUpdate) {
   try {
     let filteredHashtags = hashtags
     let hashtagsFoundId = []
     
     const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
-    
     let hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
+
+
+
     if (hashtagsFound !== []) {
       let hashtagsFoundName = []
 
@@ -18,7 +20,28 @@ async function createInsertHashtag(hashtags, postId) {
 
         filteredHashtags = hashtags.filter(hashtag => !hashtagsFoundName.includes(hashtag))
       }
-      await hashtagRepository.insertHashtag(filteredHashtags, hashtagsFoundId, postId)
+
+      const resultHashtagsPostsId = await hashtagRepository.searchHashtagsPosts(postId)
+      // console.log(postId)
+      // console.log(resultHashtagsPostsId.rows)
+      // console.log(resultHashtagsPosts.rows[1])
+      let hashtagsPostsId = []
+      resultHashtagsPostsId.rows.forEach((id, index) => {
+        hashtagsPostsId.push(id.hashtagId)
+      })
+      // console.log(hashtagsPostsId)
+
+
+      let filteredhashtagsFoundId = hashtagsFoundId.filter(id => !hashtagsPostsId.includes(id))
+      // console.log(hashtagsFoundId)
+      // console.log(filteredhashtagsFoundId)
+
+      // console.log(filteredHashtags)
+      await hashtagRepository.insertHashtag(filteredHashtags, filteredhashtagsFoundId, postId, isUpdate)
+
+      if (isUpdate) {
+        hashtagRepository.deleteHashtagsPosts(hashtags, postId)
+      }
   } catch (error) {
     console.log(error)
   }
