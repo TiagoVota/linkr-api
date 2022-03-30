@@ -56,9 +56,13 @@ export async function getUserPosts(req, res, next) {
 
 export async function getUsers(req, res, next) {
 	const { query: { userName } } = req
+	const { locals: { userId } } = res
 
 	try {
-		const users = await userRepository.findUsers({ name: userName })
+		const users = await userRepository.findUsers({
+			name: userName,
+			searcherId: userId
+		})
 
 		return res.status(200).send(users)
 
