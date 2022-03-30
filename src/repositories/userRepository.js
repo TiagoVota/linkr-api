@@ -66,7 +66,7 @@ async function getUserPosts(id) {
     WHERE u.id=$1
     ORDER BY
       p."createDate" DESC
-    LIMIT 20
+    LIMIT 20;
 	`
 
 	const queryArgs = [id]
