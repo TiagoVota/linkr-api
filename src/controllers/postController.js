@@ -12,7 +12,7 @@ async function createPost(req, res, next) {
 
 	let hashtags = []
 	if (postInfo.message !== '') {
-		hashtags = postInfo.message?.match(/#[a-z]+/gi)
+		hashtags = postInfo.message?.match(/#[a-záàâãéèêíïóôõöúçñA-ZÁÀÂÃÉÈÊÍÓÔÕÚÇÑ0-9]+/gi)
 	}
 
 	try {
