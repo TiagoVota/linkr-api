@@ -5,6 +5,6 @@ import { authSchema } from '../schemas/authSchema.js'
 
 const authRouter = new Router()
 
-authRouter.post('/', schemaValidation(authSchema), login)
+authRouter.post('/login', schemaValidation(authSchema), login)
 
 export default authRouter

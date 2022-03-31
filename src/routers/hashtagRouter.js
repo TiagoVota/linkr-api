@@ -6,7 +6,7 @@ const hashtagRouter = new Router()
 
 hashtagRouter.use(authMiddleware)
 hashtagRouter.get('/hashtags', getTrendingHashtags)
-hashtagRouter.get('/hashtag/:id', selectHashtag)
+hashtagRouter.get('/hashtags/:id', selectHashtag)
 
 
 export default hashtagRouter
