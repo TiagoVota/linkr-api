@@ -1,18 +1,18 @@
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
-import { getUrl } from "../services/api.urlMetadata.js"
+import { getUrl } from '../services/api.urlMetadata.js'
 
 async function createInsertHashtag(hashtags, postId, isUpdate) {
 	try {
 		let filteredHashtags = hashtags
 		let hashtagsFoundId = []
-    
+
 		const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
 		let hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
 
 		if (hashtagsFound !== []) {
 			let hashtagsFoundName = []
 
-			for(let i = 0; i < hashtagsFound.length; i++) {
+			for (let i = 0; i < hashtagsFound.length; i++) {
 				hashtagsFoundName.push(hashtagsFound[i].rows[0].name)
 				hashtagsFoundId.push(hashtagsFound[i].rows[0].id)
 			}
@@ -43,8 +43,8 @@ async function getTrendingHashtags(req, res, next) {
 	try {
 		const hashtags = await hashtagRepository.getHashtags()
 		hashtags.map(tag => {
-			tag.name = tag.name.replace("#", "")
-	})
+			tag.name = tag.name.replace('#', '')
+		})
 
 		res.send(hashtags)
 	} catch (error) {
@@ -54,9 +54,9 @@ async function getTrendingHashtags(req, res, next) {
 
 async function selectHashtag(req, res) {
 	const { id: hashtag } = req.params
-	const hashtagName = '#'+hashtag
+	const hashtagName = '#' + hashtag
 	try {
-		const {rows:result} = await hashtagRepository.getHashtag(hashtagName)
+		const { rows: result } = await hashtagRepository.getHashtag(hashtagName)
 		const post = []
 		for (const [idx, postArray] of result.entries()) {
 			const url = await getUrl(postArray.url)
@@ -64,13 +64,13 @@ async function selectHashtag(req, res) {
 				postId: result[idx].id,
 				userId: result[idx].userId,
 				hashtagName: result[idx].hashtagName,
-    url: url.url,
-    title: url.title,
-    description: url.description,
-    image: url.image,
-    message: result[idx].message,
-    picture: result[idx].picture,
-    username: result[idx].username,
+				url: url.url,
+				title: url.title,
+				description: url.description,
+				image: url.image,
+				message: result[idx].message,
+				picture: result[idx].picture,
+				username: result[idx].username,
 			})
 		}
 		res.send(post.reverse().slice(0, 20))
