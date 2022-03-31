@@ -83,11 +83,69 @@ async function updatePost(id, message) {
 	`, [message, id])
 }
 
+async function insertRepost(userId, postId) {
+	const queryStr = `
+		INSERT INTO 
+			"rePosts" ("sharedId", "postId")
+		VALUES ($1, $2)
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectRepost(userId, postId) {
+	const queryStr = `
+		SELECT * FROM "rePosts"
+		WHERE "sharedId"=$1 AND "postId"=$2
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function removeRepost(userId, postId) {
+	const queryStr = `
+		DELETE FROM "rePosts"
+		WHERE "sharedId"=$1 AND "postId"=$2
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectReposts(userId) {
+	const queryStr = `
+	SELECT 
+		posts.*, 
+		links.*, 
+		users.username, 
+		users.picture, 
+		likes."postId" AS "likesPostId",
+		comments."postId" AS "postComment",
+		"rePosts".id, 
+		"rePosts"."sharedId" 
+	FROM posts
+		JOIN links ON posts."linkId"=links.id
+		JOIN users ON posts."userId"=users.id
+		LEFT JOIN likes ON posts.id=likes."postId"
+		LEFT JOIN comments ON posts.id=comments."postId"
+		JOIN "rePosts" ON "rePosts"."postId"=posts.id AND "rePosts"."sharedId"=$1
+	`
+	const queryArgs = [userId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
 export const postRepository = {
 	createPost, 
 	findPosts, 
 	selectPost, 
 	deletePost,
 	findOnePost,
-	updatePost
+	updatePost,
+	insertRepost,
+	selectRepost,
+	removeRepost,
+	selectReposts
 }

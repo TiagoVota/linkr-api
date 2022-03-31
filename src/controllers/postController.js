@@ -93,10 +93,77 @@ async function updatePost(req, res, next) {
 	}
 }
 
+async function createRepost(req, res, next) {
+	const { userId } = res.locals
+	const { postId } = req.body
+
+	try {
+
+		await postRepository.insertRepost(userId, postId)
+		
+		res.status(201).send('Reposted!')
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function getReposts(req, res, next) {
+	const { userId } = res.locals
+	
+	try {
+		
+		const { rows } = await postRepository.selectReposts(userId)
+
+		//console.log(rows)
+
+		res.sendStatus(200)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function existingRepost(req, res, next) {
+	const { userId } = res.locals
+	const { id } = req.params
+
+	try {
+		const {rows: [existingRepost]} = await postRepository.selectRepost(userId, id)
+		if(existingRepost) {
+			return res.send(true)
+		}
+		res.send(false)
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function deleteRepost(req, res, next) {
+	const {id} = req.params
+	const { userId } = res.locals
+
+	try {
+		
+		const result = await postRepository.selectRepost(userId, id)
+		if(result.rowCount === 0) {
+			return res.sendStatus(401)
+		}
+		await postRepository.removeRepost(userId, id)
+		res.status(200).send('Deleted!')
+	} catch (error) {
+		next(error)
+	}
+}
+
 
 export {
 	createPost, 
 	getTimelinePosts, 
 	deletePost,
-	updatePost
+	updatePost,
+	createRepost,
+	getReposts,
+	existingRepost,
+	deleteRepost
 }
