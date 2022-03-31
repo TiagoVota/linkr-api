@@ -2,19 +2,18 @@ import * as likeController from './likeController.js'
 
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 
-
 async function createInsertHashtag(hashtags, postId, isUpdate) {
 	try {
 		let filteredHashtags = hashtags
 		let hashtagsFoundId = []
-    
+
 		const resultHashtag = await hashtagRepository.searchHashtag(hashtags)
 		let hashtagsFound = resultHashtag.filter(hashtag => hashtag.rowCount !== 0)
 
 		if (hashtagsFound !== []) {
 			let hashtagsFoundName = []
 
-			for(let i = 0; i < hashtagsFound.length; i++) {
+			for (let i = 0; i < hashtagsFound.length; i++) {
 				hashtagsFoundName.push(hashtagsFound[i].rows[0].name)
 				hashtagsFoundId.push(hashtagsFound[i].rows[0].id)
 			}
@@ -56,7 +55,7 @@ async function getTrendingHashtags(req, res, next) {
 
 async function selectHashtag(req, res, next) {
 	const { id: hashtag } = req.params
-	const hashtagName = '#'+hashtag
+	const hashtagName = '#' + hashtag
 	const POST_LIMIT = 10
 
 	try {
