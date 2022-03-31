@@ -7,7 +7,7 @@ async function createPost(url, title, description, image, userId, message) {
 				(url, title, description, image)
 			VALUES  
 				($1, $2, $3, $4)
-	  		RETURNING id
+				RETURNING id
 		),
 		post as (
 			INSERT INTO posts 

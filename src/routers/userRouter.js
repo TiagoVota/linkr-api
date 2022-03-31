@@ -7,7 +7,7 @@ import authMiddleware from '../middlewares/authMiddleware.js'
 const userRouter = new Router()
 
 userRouter.get('/users', authMiddleware, getUsers)
-userRouter.get('/user/:id', authMiddleware, getUserPosts)
+userRouter.get('/users/:id', authMiddleware, getUserPosts)
 userRouter.post('/sign-up', schemaValidation(userSchema), signUp)
 
 export default userRouter

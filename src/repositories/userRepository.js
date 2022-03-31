@@ -66,7 +66,7 @@ async function getUserPosts(id) {
     WHERE u.id=$1
     ORDER BY
       p."createDate" DESC
-    LIMIT 20
+    LIMIT 20;
 	`
 
 	const queryArgs = [id]
@@ -77,19 +77,28 @@ async function getUserPosts(id) {
 }
 
 
-async function findUsers({ name }) {
+async function findUsers({ name, searcherId }) {
 	const queryStr = `
 		SELECT
-			id,
-			username,
-			picture
+			u.id,
+			u.username,
+			u.picture,
+			"isFollowing"(f."followingId")
 		FROM
-			users
+			users AS u
+			left join followers AS f ON f."followingId" = u.id
 		WHERE
-			username ILIKE $1;
+			(
+				f."userId" = $1
+				OR f."userId" IS null
+			)
+			AND u.username ILIKE $2
+		ORDER BY
+			f.id,
+			u.username;
 	`
 
-	const queryArgs = [`${name}%`]
+	const queryArgs = [searcherId, `${name}%`]
 
 	const usersResult = await connection.query(queryStr, queryArgs)
 
