@@ -8,6 +8,6 @@ const commentRouter = new Router()
 
 commentRouter.use(authMiddleware)
 commentRouter.post('/posts/:id/comments', schemaValidation(commentSchema), createComment)
-commentRouter.get('/posts/:id/comments', getComments)
+commentRouter.get('/posts/:id/comments/:userId', getComments)
 
 export default commentRouter

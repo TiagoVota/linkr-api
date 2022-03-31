@@ -13,9 +13,9 @@ export async function createComment(req, res, next) {
 }
 
 export async function getComments(req, res, next) {
-	const { id: postId } = req.params
+	const { id: postId, userId } = req.params
 	try {
-		const comments = await commentRepository.getComments(postId)
+		const comments = await commentRepository.getComments(postId, userId)
 		res.send(comments)
 	} catch (error) {
 		next(error)

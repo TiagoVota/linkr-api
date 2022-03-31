@@ -131,10 +131,10 @@ ALTER TABLE "likes" ADD CONSTRAINT "likes_fk1" FOREIGN KEY ("postId") REFERENCES
 
 
 ALTER TABLE "comments" ADD CONSTRAINT "comments_fk0" FOREIGN KEY ("authorId") REFERENCES "users"("id");
-ALTER TABLE "comments" ADD CONSTRAINT "comments_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("id");
+ALTER TABLE "comments" ADD CONSTRAINT "comments_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
 
 ALTER TABLE "rePosts" ADD CONSTRAINT "rePosts_fk0" FOREIGN KEY ("sharedId") REFERENCES "users"("id");
-ALTER TABLE "rePosts" ADD CONSTRAINT "rePosts_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("id");
+ALTER TABLE "rePosts" ADD CONSTRAINT "rePosts_fk1" FOREIGN KEY ("postId") REFERENCES "posts"("id") ON DELETE CASCADE;
 
 ALTER TABLE "followers" ADD CONSTRAINT "followers_fk0" FOREIGN KEY ("userId") REFERENCES "users"("id");
 ALTER TABLE "followers" ADD CONSTRAINT "followers_fk1" FOREIGN KEY ("followingId") REFERENCES "users"("id");

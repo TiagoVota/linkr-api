@@ -13,19 +13,22 @@ async function createComment(text, id, postId) {
 	return result
 }
 
-async function getComments(postId) {
+async function getComments(postId, userId) {
 	const queryStr = `
 		SELECT 
-			c.id, 
-			c.text, 
-			u.picture, 
-			u.username 
-		FROM comments c
-		JOIN users u ON c."authorId"=u.id
-		WHERE c."postId"=$1
-		ORDER BY c.id
+      c.id, 
+      c.text, 
+	    c."authorId",
+      u.picture, 
+      u.username, 
+	    "isFollowing"(f."followingId")
+    FROM comments c
+    LEFT JOIN users u ON c."authorId"=u.id
+    LEFT JOIN followers f ON f."followingId"=c."authorId" AND f."userId"=$2
+    WHERE c."postId"=$1
+    ORDER BY c.id
  `
-	const queryArgs = [postId]
+	const queryArgs = [postId, userId]
 
 	const result = await connection.query(queryStr, queryArgs)
 	return result.rows
