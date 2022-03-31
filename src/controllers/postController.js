@@ -156,6 +156,21 @@ async function deleteRepost(req, res, next) {
 	}
 }
 
+async function numberReposts(req, res, next) {
+	const {id} = req.params
+
+	try {
+		
+		const {rows: list} = await postRepository.countReposts(id)
+		const numberReposts = list[0].count
+		
+		res.send(numberReposts).status(200)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
 
 export {
 	createPost, 
@@ -165,5 +180,6 @@ export {
 	createRepost,
 	getReposts,
 	existingRepost,
-	deleteRepost
+	deleteRepost,
+	numberReposts
 }

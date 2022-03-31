@@ -104,6 +104,19 @@ async function selectRepost(userId, postId) {
 	return connection.query(queryStr, queryArgs)
 }
 
+async function countReposts(postId) {
+	const queryStr = `
+		SELECT COUNT("postId")
+		FROM 
+			"rePosts"
+		WHERE
+			"rePosts"."postId"=$1
+	`
+	const queryArgs = [postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
 async function removeRepost(userId, postId) {
 	const queryStr = `
 		DELETE FROM "rePosts"
@@ -147,5 +160,6 @@ export const postRepository = {
 	insertRepost,
 	selectRepost,
 	removeRepost,
+	countReposts,
 	selectReposts
 }
