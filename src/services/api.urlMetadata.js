@@ -1,17 +1,21 @@
 import urlMetadata from 'url-metadata'
 
+import { choseLinkImg } from '../helpers/urlMetadataHelper.js'
+
+
 const getUrl = async (url) => {
 	let urlInfo = {}
 
 	try {
 		const response = await urlMetadata(url)
-		const image = response['twitter:image'] || response.image || response['og:image']
+
 		urlInfo = {
 			url: response.url || '',
 			title: response.title || '',
 			description: response.description || '',
-			image: image || '',
+			image: choseLinkImg(response),
 		}
+
 	} catch (error) {
 		urlInfo = null
 		console.log('url-metadata error:\n', error)
