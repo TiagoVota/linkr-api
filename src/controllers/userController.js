@@ -34,13 +34,14 @@ export async function signUp(req, res, next) {
 
 export async function getUserPosts(req, res, next) {
 	const { id } = req.params
+	const OFFSET = req.query.offset
 
 	try {
 		const user = await userRepository.findUser(id)
 
 		if (!user) return res.sendStatus(404)
 
-		const userPosts = await userRepository.getUserPosts(id)
+		const userPosts = await userRepository.getUserPosts(id, OFFSET)
 
 		const likesPostsList = await likeController.getLikesPosts({
 			postList: userPosts
@@ -49,6 +50,7 @@ export async function getUserPosts(req, res, next) {
 		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
+		console.log(error)
 		next(error)
 	}
 }

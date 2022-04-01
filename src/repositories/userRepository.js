@@ -47,26 +47,29 @@ async function findUser(id) {
 	return result.rowCount
 }
 
-async function getUserPosts(id) {
+async function getUserPosts(id, offset) {
 	const queryStr = `
 		SELECT
 			u.username,
 			u.picture,
-      p.id AS "postId",
-      p."userId",
-      p.message,
-      l.url AS link,
-      l.title,
-      l.description,
-      l.image
-		FROM
-      users AS u
-			LEFT JOIN posts AS p ON p."userId" = u.id
-      LEFT JOIN links AS l ON p."linkId" = l.id
-    WHERE u.id=$1
-    ORDER BY
-      p."createDate" DESC
-    LIMIT 20;
+			p.id AS "postId",
+			p."userId",
+			p.message,
+			l.url AS link,
+			l.title,
+			l.description,
+			l.image
+				FROM
+			users AS u
+					LEFT JOIN posts AS p ON p."userId" = u.id
+			LEFT JOIN links AS l ON p."linkId" = l.id
+			WHERE u.id=$1
+			ORDER BY
+			p."createDate" DESC
+			LIMIT 
+				10
+			OFFSET
+				${offset};
 	`
 
 	const queryArgs = [id]
