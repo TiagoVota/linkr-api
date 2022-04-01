@@ -3,9 +3,9 @@ import connection from '../database/database.js'
 async function signUp({ email, username, password, picture }) {
 	const queryStr = `
 		INSERT INTO users
-      (email, username, password, picture)
-    VALUES
-      ($1, $2, $3, $4);
+			(email, username, password, picture)
+		VALUES
+			($1, $2, $3, $4);
 	`
 	const queryArgs = [email, username, password, picture]
 
@@ -15,9 +15,9 @@ async function signUp({ email, username, password, picture }) {
 
 async function searchEmail(email) {
 	const queryStr = `
-    SELECT id FROM users
-    WHERE email=$1;
-  `
+		SELECT id FROM users
+		WHERE email=$1;
+	`
 	const queryArgs = [email]
 
 	const result = await connection.query(queryStr, queryArgs)
@@ -26,9 +26,9 @@ async function searchEmail(email) {
 
 async function searchUsername(username) {
 	const queryStr = `
-    SELECT id FROM users
-    WHERE username=$1;
-  `
+		SELECT id FROM users
+		WHERE username=$1;
+	`
 	const queryArgs = [username]
 
 	const result = await connection.query(queryStr, queryArgs)
@@ -37,17 +37,17 @@ async function searchUsername(username) {
 
 async function findUser(id) {
 	const queryStr = `
-    SELECT id
-    FROM users
-    WHERE id=$1
-  `
+		SELECT id
+		FROM users
+		WHERE id=$1
+	`
 	const queryArgs = [id]
 
 	const result = await connection.query(queryStr, queryArgs)
 	return result.rowCount
 }
 
-async function getUserPosts(id, offset) {
+async function getUserPosts({ searcherId, userId, offset }) {
 	const queryStr = `
 		SELECT
 			u.username,
@@ -58,21 +58,27 @@ async function getUserPosts(id, offset) {
 			l.url AS link,
 			l.title,
 			l.description,
-			l.image
-				FROM
+			l.image,
+			"isFollowing"(f."userId")
+		FROM
 			users AS u
-					LEFT JOIN posts AS p ON p."userId" = u.id
+			LEFT JOIN posts AS p ON p."userId" = u.id
 			LEFT JOIN links AS l ON p."linkId" = l.id
-			WHERE u.id=$1
-			ORDER BY
+			LEFT JOIN followers AS f ON (
+				f."followingId" = u.id
+				AND f."userId" = $1
+			)
+		WHERE
+			u.id = $2
+		ORDER BY
 			p."createDate" DESC
-			LIMIT 
+		LIMIT 
 				10
-			OFFSET
-				${offset};
+		OFFSET
+			${offset};
 	`
 
-	const queryArgs = [id]
+	const queryArgs = [searcherId, userId]
 
 	const postsResult = await connection.query(queryStr, queryArgs)
 
@@ -80,27 +86,25 @@ async function getUserPosts(id, offset) {
 }
 
 
-async function findUsers({ name, searcherId }) {
+async function findUsers({ searcherId, name }) {
 	const queryStr = `
-		SELECT
+			SELECT
 			u.id,
 			u.username,
 			u.picture,
-			"isFollowing"(f."followingId")
+			"isFollowing"(f."userId")
 		FROM
 			users AS u
-			left join followers AS f ON f."followingId" = u.id
-		WHERE
-			(
-				f."userId" = $1
-				OR f."userId" IS null
+			LEFT JOIN followers AS f ON (
+				f."followingId" = u.id
+				AND f."userId" = $1
 			)
-			AND u.username ILIKE $2
+		WHERE
+			u.username ILIKE $2
 		ORDER BY
-			f.id,
+			f."userId",
 			u.username;
 	`
-
 	const queryArgs = [searcherId, `${name}%`]
 
 	const usersResult = await connection.query(queryStr, queryArgs)

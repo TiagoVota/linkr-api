@@ -33,6 +33,7 @@ export async function signUp(req, res, next) {
 }
 
 export async function getUserPosts(req, res, next) {
+	const { locals: { userId } } = res
 	const { id } = req.params
 	const OFFSET = req.query.offset
 
@@ -41,7 +42,11 @@ export async function getUserPosts(req, res, next) {
 
 		if (!user) return res.sendStatus(404)
 
-		const userPosts = await userRepository.getUserPosts(id, OFFSET)
+		const userPosts = await userRepository.getUserPosts({
+			searcherId: userId,
+			userId: id,
+			offset: OFFSET
+		})
 
 		const likesPostsList = await likeController.getLikesPosts({
 			postList: userPosts
