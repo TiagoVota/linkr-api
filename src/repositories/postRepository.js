@@ -24,7 +24,7 @@ async function createPost(url, title, description, image, userId, message) {
 	return result
 }
 
-const findTimelinePosts = async ({ searcherId, limit }) => {
+const findTimelinePosts = async ({ searcherId, limit, offset }) => {
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -52,7 +52,9 @@ const findTimelinePosts = async ({ searcherId, limit }) => {
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
-			${limit};
+			${limit}
+		OFFSET
+			${offset};
 	`
 	const queryArgs = [searcherId]
 
@@ -137,7 +139,7 @@ async function removeRepost(userId, postId) {
 	return connection.query(queryStr, queryArgs)
 }
 
-async function selectReposts({ searcherId }) {
+async function selectReposts({ searcherId, limit, offset }) {
 	const queryStr = `
 	SELECT 
 		p.id AS "postId",
@@ -168,6 +170,10 @@ async function selectReposts({ searcherId }) {
 		"isFollowing"(f."userId") IS TRUE
 		ORDER BY
 			r."createDate" DESC
+	LIMIT
+			${limit}
+	OFFSET
+			${offset}
 	`
 
 	const queryArgs = [searcherId]
