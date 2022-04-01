@@ -117,7 +117,7 @@ async function getHashtags() {
 	return result.rows
 }
 
-async function getHashtag({ name, limit }){
+async function getHashtagPosts({ searcherId, name, limit }){
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -129,21 +129,26 @@ async function getHashtag({ name, limit }){
 			l.url AS link,
 			l.title,
 			l.description,
-			l.image
+			l.image,
+			"isFollowing"(f."userId")
 		FROM
 			hashtags AS h
 			JOIN "hashtagsPosts" AS hp ON h.id = hp."hashtagId"
 			JOIN posts AS p ON p.id = hp."postId"
 			JOIN users AS u ON p."userId" = u.id
 			JOIN links AS l ON p."linkId" = l.id
+			LEFT JOIN followers AS f ON (
+				f."followingId" = u.id
+				AND f."userId" = $1
+			)
 		WHERE
-			h.name ILIKE $1
+			h.name ILIKE $2
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
 			${limit};
 	`
-	const queryArgs = [name]
+	const queryArgs = [searcherId, name]
 	
 	const hashtagPostsResult = await connection.query(queryStr, queryArgs)
 
@@ -157,5 +162,5 @@ export const hashtagRepository = {
 	getHashtags,
 	deleteHashtagsPosts,
 	searchHashtagsPosts,
-	getHashtag,
+	getHashtagPosts,
 }

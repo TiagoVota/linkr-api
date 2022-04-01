@@ -34,19 +34,23 @@ export async function signUp(req, res, next) {
 }
 
 export async function getUserPosts(req, res, next) {
+	const { locals: { userId } } = res
 	const { id } = req.params
 
 	try {
 		const user = await userRepository.findUser(id)
 
-		if (!user) return res.sendStatus(404)
-
-		const userPosts = await userRepository.getUserPosts(id)
+		if (!user) return res.sendStatus(404)		
+		
+		const userPosts = await userRepository.getUserPosts({
+			searcherId: userId,
+			userId: id,
+		})
 		const { rows } = await postRepository.selectRepostsByUser(id)
-
+		
 		const userPostsConcat = userPosts.concat(rows)
 		const userPostsList = userPostsConcat.sort((a, b) => b.createDate - a.createDate)
-
+		
 		const likesPostsList = await likeController.getLikesPosts({
 			postList: userPostsList
 		})

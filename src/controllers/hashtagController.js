@@ -55,14 +55,16 @@ async function getTrendingHashtags(req, res, next) {
 }
 
 async function selectHashtag(req, res, next) {
+	const { locals: { userId } } = res
 	const { id: hashtag } = req.params
 	const hashtagName = '#' + hashtag
 	const POST_LIMIT = 10
 
 	try {
-		const posts = await hashtagRepository.getHashtag({
+		const posts = await hashtagRepository.getHashtagPosts({
+			searcherId: userId,
 			name: hashtagName,
-			limit: POST_LIMIT
+			limit: POST_LIMIT,
 		})
 		const { rows } = await postRepository.selectRepostsByHashtag({name: hashtagName})
 
