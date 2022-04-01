@@ -33,7 +33,12 @@ async function getTimelinePosts(req, res, next) {
 	const POSTS_LIMIT = 20
 
 	try {
-		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		const posts = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		const { rows } = await postRepository.selectReposts()
+
+		const postsConcat = posts.concat(rows)
+		const postList = postsConcat.sort((a, b) => b.createDate - a.createDate)
+		
 		
 		const likesPostsList = await likeController.getLikesPosts({ postList })
 
@@ -108,21 +113,21 @@ async function createRepost(req, res, next) {
 	}
 }
 
-async function getReposts(req, res, next) {
-	const { userId } = res.locals
+// async function getReposts(req, res, next) {
+// 	const { userId } = res.locals
 	
-	try {
+// 	try {
 		
-		const { rows } = await postRepository.selectReposts(userId)
+// 		const { rows } = await postRepository.selectReposts(userId)
 
-		//console.log(rows)
+// 		console.log(rows)
 
-		res.sendStatus(200)
+// 		res.sendStatus(200)
 
-	} catch (error) {
-		next(error)
-	}
-}
+// 	} catch (error) {
+// 		next(error)
+// 	}
+// }
 
 async function existingRepost(req, res, next) {
 	const { userId } = res.locals
@@ -178,7 +183,6 @@ export {
 	deletePost,
 	updatePost,
 	createRepost,
-	getReposts,
 	existingRepost,
 	deleteRepost,
 	numberReposts

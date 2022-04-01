@@ -30,6 +30,7 @@ const findPosts = async ({ limit }) => {
 			p.id AS "postId",
 			p."userId",
 			p.message,
+			p."createDate",
 			u.username,
 			u.picture,
 			l.url AS link,
@@ -127,25 +128,98 @@ async function removeRepost(userId, postId) {
 	return connection.query(queryStr, queryArgs)
 }
 
-async function selectReposts(userId) {
+async function selectReposts() {
 	const queryStr = `
 	SELECT 
-		posts.*, 
-		links.*, 
-		users.username, 
-		users.picture, 
-		likes."postId" AS "likesPostId",
-		comments."postId" AS "postComment",
-		"rePosts".id, 
-		"rePosts"."sharedId" 
-	FROM posts
-		JOIN links ON posts."linkId"=links.id
-		JOIN users ON posts."userId"=users.id
-		LEFT JOIN likes ON posts.id=likes."postId"
-		LEFT JOIN comments ON posts.id=comments."postId"
-		JOIN "rePosts" ON "rePosts"."postId"=posts.id AND "rePosts"."sharedId"=$1
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate"
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur on r."sharedId"=ur.id
+		ORDER BY
+			r."createDate" DESC
+	`
+	//const queryArgs = [userId]
+
+	return connection.query(queryStr)
+}
+
+async function selectRepostsByUser(userId) {
+	const queryStr = `
+	SELECT 
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate"
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur on r."sharedId"=ur.id
+	WHERE
+		r."sharedId"=$1
+		ORDER BY
+			r."createDate" DESC
 	`
 	const queryArgs = [userId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectRepostsByHashtag({ name }) {
+	const queryStr = `
+	SELECT 
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate"
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur ON r."sharedId"=ur.id
+		JOIN "hashtagsPosts" AS hp ON hp."postId"=p.id
+		JOIN hashtags AS h ON hp."hashtagId"=h.id
+	WHERE
+		h.name=$1
+	ORDER BY
+			r."createDate" DESC
+	`
+	const queryArgs = [name]
 
 	return connection.query(queryStr, queryArgs)
 }
@@ -161,5 +235,7 @@ export const postRepository = {
 	selectRepost,
 	removeRepost,
 	countReposts,
-	selectReposts
+	selectReposts,
+	selectRepostsByUser,
+	selectRepostsByHashtag
 }
