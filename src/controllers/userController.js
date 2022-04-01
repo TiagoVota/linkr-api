@@ -33,6 +33,7 @@ export async function signUp(req, res, next) {
 }
 
 export async function getUserPosts(req, res, next) {
+	const { locals: { userId } } = res
 	const { id } = req.params
 
 	try {
@@ -40,7 +41,10 @@ export async function getUserPosts(req, res, next) {
 
 		if (!user) return res.sendStatus(404)
 
-		const userPosts = await userRepository.getUserPosts(id)
+		const userPosts = await userRepository.getUserPosts({
+			searcherId: userId,
+			userId: id,
+		})
 
 		const likesPostsList = await likeController.getLikesPosts({
 			postList: userPosts

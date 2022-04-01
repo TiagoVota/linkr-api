@@ -6,6 +6,7 @@ import userRouter from './userRouter.js'
 import postRouter from './postRouter.js'
 import hashtagRouter from './hashtagRouter.js'
 import likeRouter from './likeRouter.js'
+import followRouter from './followRouter.js'
 import commentRouter from './commentRouter.js'
 
 
@@ -17,6 +18,7 @@ router.use(userRouter)
 router.use(postRouter)
 router.use(hashtagRouter)
 router.use('/likes', likeRouter)
+router.use('/follow', followRouter)
 router.use(commentRouter)
 
 export default router
