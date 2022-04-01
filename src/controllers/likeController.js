@@ -1,5 +1,8 @@
 import * as likeRepository from '../repositories/likeRepository.js'
 
+import ExistentLikeError from '../errors/ExistentLikeError.js'
+import NoLikeError from '../errors/NoLikeError.js'
+
 
 async function getLikesPosts({ postList }) {
 	const likesPromises = postList.map(({ postId }) => {
@@ -28,7 +31,7 @@ async function addLike(req, res, next) {
 			postId,
 			userId,
 		})
-		if (existentLike !== null) throw new Error()
+		if (existentLike !== null) throw new ExistentLikeError()
 
 		await likeRepository.insertLike({ userId, postId })
 
@@ -48,7 +51,7 @@ async function removeLike(req, res, next) {
 			postId,
 			userId,
 		})
-		if (existentLike === null) throw new Error()
+		if (existentLike === null) throw new NoLikeError()
 
 		await likeRepository.deleteLike({ userId, postId })
 
