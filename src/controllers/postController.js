@@ -113,22 +113,6 @@ async function createRepost(req, res, next) {
 	}
 }
 
-// async function getReposts(req, res, next) {
-// 	const { userId } = res.locals
-	
-// 	try {
-		
-// 		const { rows } = await postRepository.selectReposts(userId)
-
-// 		console.log(rows)
-
-// 		res.sendStatus(200)
-
-// 	} catch (error) {
-// 		next(error)
-// 	}
-// }
-
 async function existingRepost(req, res, next) {
 	const { userId } = res.locals
 	const { id } = req.params

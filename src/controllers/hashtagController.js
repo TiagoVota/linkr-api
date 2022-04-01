@@ -65,7 +65,6 @@ async function selectHashtag(req, res, next) {
 			limit: POST_LIMIT
 		})
 		const { rows } = await postRepository.selectRepostsByHashtag({name: hashtagName})
-		console.log(rows)
 
 		const postsConcat = posts.concat(rows)
 		const postList = postsConcat.sort((a, b) => b.createDate - a.createDate)

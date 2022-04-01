@@ -153,7 +153,6 @@ async function selectReposts() {
 		ORDER BY
 			r."createDate" DESC
 	`
-	//const queryArgs = [userId]
 
 	return connection.query(queryStr)
 }
