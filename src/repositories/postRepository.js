@@ -30,6 +30,7 @@ const findTimelinePosts = async ({ searcherId, limit, offset }) => {
 			p.id AS "postId",
 			p."userId",
 			p.message,
+			p."createDate",
 			u.username,
 			u.picture,
 			l.url AS link,
@@ -94,6 +95,158 @@ async function updatePost(id, message) {
 	`, [message, id])
 }
 
+async function insertRepost(userId, postId) {
+	const queryStr = `
+		INSERT INTO 
+			"rePosts" ("sharedId", "postId")
+		VALUES ($1, $2)
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectRepost(userId, postId) {
+	const queryStr = `
+		SELECT * FROM "rePosts"
+		WHERE "sharedId"=$1 AND "postId"=$2
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function countReposts(postId) {
+	const queryStr = `
+		SELECT COUNT("postId")
+		FROM 
+			"rePosts"
+		WHERE
+			"rePosts"."postId"=$1
+	`
+	const queryArgs = [postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function removeRepost(userId, postId) {
+	const queryStr = `
+		DELETE FROM "rePosts"
+		WHERE "sharedId"=$1 AND "postId"=$2
+	`
+	const queryArgs = [userId, postId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectReposts({ searcherId, limit, offset }) {
+	const queryStr = `
+	SELECT 
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate",
+		"isFollowing"(f."userId")
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur on r."sharedId"=ur.id
+		LEFT JOIN followers AS f ON (
+			f."followingId" = r."sharedId"
+			OR f."userId" = $1
+		)
+	WHERE
+		"isFollowing"(f."userId") IS TRUE
+		ORDER BY
+			r."createDate" DESC
+	LIMIT
+			${limit}
+	OFFSET
+			${offset}
+	`
+
+	const queryArgs = [searcherId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectRepostsByUser(userId) {
+	const queryStr = `
+	SELECT 
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate"
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur on r."sharedId"=ur.id
+	WHERE
+		r."sharedId"=$1
+		ORDER BY
+			r."createDate" DESC
+	`
+	const queryArgs = [userId]
+
+	return connection.query(queryStr, queryArgs)
+}
+
+async function selectRepostsByHashtag({ name }) {
+	const queryStr = `
+	SELECT 
+		p.id AS "postId",
+		p."userId",
+		p.message, 
+		u.username, 
+		u.picture, 
+		l.url AS link,
+		l.title,
+		l.description,
+		l.image, 
+		r.id AS "rePostId",
+		r."sharedId" AS "userSharedId",
+		ur.username AS "userSharedName",
+		r."postId",
+		r."createDate"
+	FROM posts AS p
+		JOIN links AS l ON p."linkId"=l.id
+		JOIN users AS u ON p."userId"=u.id
+		JOIN "rePosts" AS r ON r."postId"=p.id
+		JOIN users AS ur ON r."sharedId"=ur.id
+		JOIN "hashtagsPosts" AS hp ON hp."postId"=p.id
+		JOIN hashtags AS h ON hp."hashtagId"=h.id
+	WHERE
+		h.name=$1
+	ORDER BY
+			r."createDate" DESC
+	`
+	const queryArgs = [name]
+
+	return connection.query(queryStr, queryArgs)
+}
+
 export const postRepository = {
 	createPost, 
 	findTimelinePosts, 
@@ -101,4 +254,11 @@ export const postRepository = {
 	deletePost,
 	findOnePost,
 	updatePost,
+	insertRepost,
+	selectRepost,
+	removeRepost,
+	countReposts,
+	selectReposts,
+	selectRepostsByUser,
+	selectRepostsByHashtag
 }

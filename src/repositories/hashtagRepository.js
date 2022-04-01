@@ -123,6 +123,7 @@ async function getHashtagPosts({ searcherId, name, limit, offset }){
 			p.id AS "postId",
 			p."userId",
 			p.message,
+			p."createDate",
 			u.username,
 			u.picture,
 			l.url AS link,

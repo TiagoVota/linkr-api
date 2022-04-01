@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import * as likeController from './likeController.js'
 
 import { userRepository } from '../repositories/userRepository.js'
+import { postRepository } from '../repositories/postRepository.js'
 
 
 export async function signUp(req, res, next) {
@@ -40,16 +41,20 @@ export async function getUserPosts(req, res, next) {
 	try {
 		const user = await userRepository.findUser(id)
 
-		if (!user) return res.sendStatus(404)
-
+		if (!user) return res.sendStatus(404)		
+		
 		const userPosts = await userRepository.getUserPosts({
 			searcherId: userId,
 			userId: id,
 			offset: OFFSET
 		})
-
+		const { rows } = await postRepository.selectRepostsByUser(id)
+		
+		const userPostsConcat = userPosts.concat(rows)
+		const userPostsList = userPostsConcat.sort((a, b) => b.createDate - a.createDate)
+		
 		const likesPostsList = await likeController.getLikesPosts({
-			postList: userPosts
+			postList: userPostsList
 		})
 
 		return res.status(200).send(likesPostsList)

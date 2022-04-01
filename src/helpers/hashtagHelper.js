@@ -3,9 +3,9 @@ const hashtagRegex = /#[a-záàâãéèêíïóôõöúçñA-ZÁÀÂÃÉÈÊÍÓ
 const makeHashtagList = (message) => {
 	if (message === '') return []
 
-	const hashtagList = message
-		?.match(hashtagRegex)
-		.forEach(name => name.toLowerCase())
+	const regexResult = message?.match(hashtagRegex) || []
+
+	const hashtagList = regexResult.map(name => name.toLowerCase())
 
 	return hashtagList
 }

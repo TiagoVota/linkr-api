@@ -1,6 +1,7 @@
 import * as likeController from './likeController.js'
 
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
+import { postRepository } from '../repositories/postRepository.js'
 
 async function createInsertHashtag(hashtags, postId, isUpdate) {
 	try {
@@ -61,12 +62,16 @@ async function selectHashtag(req, res, next) {
 	const POST_LIMIT = 10
 
 	try {
-		const postList = await hashtagRepository.getHashtagPosts({
+		const posts = await hashtagRepository.getHashtagPosts({
 			searcherId: userId,
 			name: hashtagName,
 			limit: POST_LIMIT,
 			offset: OFFSET
 		})
+		const { rows } = await postRepository.selectRepostsByHashtag({name: hashtagName})
+
+		const postsConcat = posts.concat(rows)
+		const postList = postsConcat.sort((a, b) => b.createDate - a.createDate)
 
 		const likesPostsList = await likeController.getLikesPosts({ postList })
 

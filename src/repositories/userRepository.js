@@ -55,6 +55,7 @@ async function getUserPosts({ searcherId, userId, offset }) {
 			p.id AS "postId",
 			p."userId",
 			p.message,
+			p."createDate",
 			l.url AS link,
 			l.title,
 			l.description,

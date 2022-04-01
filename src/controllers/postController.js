@@ -37,15 +37,20 @@ async function getTimelinePosts(req, res, next) {
 	const POSTS_LIMIT = 10
 	const OFFSET = req.query.offset
 
-	try {
+	try {		
+		
 		const userFollow = await followRepository.findUserFollows({ id: userId })
 		
-		const postList = await postRepository.findTimelinePosts({
+		const posts = await postRepository.findTimelinePosts({
 			searcherId: userId,
 			limit: POSTS_LIMIT,
 			offset: OFFSET
 		})
+		const { rows } = await postRepository.selectReposts({ searcherId: userId, limit: POSTS_LIMIT, offset: OFFSET })
 		
+		const postsConcat = posts.concat(rows)
+		const postList = postsConcat.sort((a, b) => b.createDate - a.createDate).slice(0, 10)
+
 		const noFollows = Boolean(userFollow === null)
 		const NoPosts = Boolean(postList.length === 0)
 		if (noFollows && NoPosts) {
@@ -107,10 +112,76 @@ async function updatePost(req, res, next) {
 	}
 }
 
+async function createRepost(req, res, next) {
+	const { userId } = res.locals
+	const { postId } = req.body
+
+	try {
+
+		await postRepository.insertRepost(userId, postId)
+		
+		res.status(201).send('Reposted!')
+
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function existingRepost(req, res, next) {
+	const { userId } = res.locals
+	const { id } = req.params
+
+	try {
+		const {rows: [existingRepost]} = await postRepository.selectRepost(userId, id)
+		if(existingRepost) {
+			return res.send(true)
+		}
+		res.send(false)
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function deleteRepost(req, res, next) {
+	const {id} = req.params
+	const { userId } = res.locals
+
+	try {
+		
+		const result = await postRepository.selectRepost(userId, id)
+		if(result.rowCount === 0) {
+			return res.sendStatus(401)
+		}
+		await postRepository.removeRepost(userId, id)
+		res.status(200).send('Deleted!')
+	} catch (error) {
+		next(error)
+	}
+}
+
+async function numberReposts(req, res, next) {
+	const {id} = req.params
+
+	try {
+		
+		const {rows: list} = await postRepository.countReposts(id)
+		const numberReposts = list[0].count
+		
+		res.send(numberReposts).status(200)
+
+	} catch (error) {
+		next(error)
+	}
+}
+
 
 export {
 	createPost, 
 	getTimelinePosts, 
 	deletePost,
 	updatePost,
+	createRepost,
+	existingRepost,
+	deleteRepost,
+	numberReposts
 }
