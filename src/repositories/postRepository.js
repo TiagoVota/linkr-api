@@ -167,7 +167,8 @@ async function selectReposts({ searcherId, limit, offset }) {
 			OR f."userId" = $1
 		)
 	WHERE
-		"isFollowing"(f."userId") IS TRUE
+    r."sharedId" = $1
+    OR "isFollowing"(f."userId") IS TRUE
 		ORDER BY
 			r."createDate" DESC
 	LIMIT
@@ -196,6 +197,7 @@ async function selectRepostsByUser(userId) {
 		r.id AS "rePostId",
 		r."sharedId" AS "userSharedId",
 		ur.username AS "userSharedName",
+    ur.picture AS "userSharedPicture",
 		r."postId",
 		r."createDate"
 	FROM posts AS p
@@ -248,9 +250,9 @@ async function selectRepostsByHashtag({ name }) {
 }
 
 export const postRepository = {
-	createPost, 
-	findTimelinePosts, 
-	selectPost, 
+	createPost,
+	findTimelinePosts,
+	selectPost,
 	deletePost,
 	findOnePost,
 	updatePost,
