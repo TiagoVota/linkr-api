@@ -35,6 +35,7 @@ async function createPost(req, res, next) {
 async function getTimelinePosts(req, res, next) {
 	const { locals: { userId } } = res
 	const POSTS_LIMIT = 10
+	console.log(userId)
 
 	try {		
 		
@@ -44,7 +45,7 @@ async function getTimelinePosts(req, res, next) {
 			limit: POSTS_LIMIT,
 			searcherId: userId,
 		})
-		const { rows } = await postRepository.selectReposts()
+		const { rows } = await postRepository.selectReposts({ searcherId: userId })
 		
 		const postsConcat = posts.concat(rows)
 		const postList = postsConcat.sort((a, b) => b.createDate - a.createDate)

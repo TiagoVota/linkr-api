@@ -137,7 +137,7 @@ async function removeRepost(userId, postId) {
 	return connection.query(queryStr, queryArgs)
 }
 
-async function selectReposts() {
+async function selectReposts({ searcherId }) {
 	const queryStr = `
 	SELECT 
 		p.id AS "postId",
@@ -153,17 +153,26 @@ async function selectReposts() {
 		r."sharedId" AS "userSharedId",
 		ur.username AS "userSharedName",
 		r."postId",
-		r."createDate"
+		r."createDate",
+		"isFollowing"(f."userId")
 	FROM posts AS p
 		JOIN links AS l ON p."linkId"=l.id
 		JOIN users AS u ON p."userId"=u.id
 		JOIN "rePosts" AS r ON r."postId"=p.id
 		JOIN users AS ur on r."sharedId"=ur.id
+		LEFT JOIN followers AS f ON (
+			f."followingId" = r."sharedId"
+			OR f."userId" = $1
+		)
+	WHERE
+		"isFollowing"(f."userId") IS TRUE
 		ORDER BY
 			r."createDate" DESC
 	`
 
-	return connection.query(queryStr)
+	const queryArgs = [searcherId]
+
+	return connection.query(queryStr, queryArgs)
 }
 
 async function selectRepostsByUser(userId) {
