@@ -5,7 +5,7 @@ async function createPost(url, title, description, image, userId, message) {
 		with link as (
 			INSERT INTO links
 				(url, title, description, image)
-			VALUES  
+			VALUES
 				($1, $2, $3, $4)
 				RETURNING id
 		),
@@ -24,7 +24,7 @@ async function createPost(url, title, description, image, userId, message) {
 	return result
 }
 
-const findPosts = async ({ limit }) => {
+const findTimelinePosts = async ({ searcherId, limit }) => {
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -35,18 +35,24 @@ const findPosts = async ({ limit }) => {
 			l.url AS link,
 			l.title,
 			l.description,
-			l.image
+			l.image,
+			"isFollowing"(f."userId")
 		FROM
 			posts AS p
 			JOIN users AS u ON p."userId" = u.id
 			JOIN links AS l ON p."linkId" = l.id
+			LEFT JOIN followers AS f ON (
+				f."followingId" = u.id
+				AND f."userId" = $1
+			)
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
 			${limit};
 	`
+	const queryArgs = [searcherId]
 
-	const postsResult = await connection.query(queryStr)
+	const postsResult = await connection.query(queryStr, queryArgs)
 
 	return postsResult.rows
 }
@@ -85,9 +91,9 @@ async function updatePost(id, message) {
 
 export const postRepository = {
 	createPost, 
-	findPosts, 
+	findTimelinePosts, 
 	selectPost, 
 	deletePost,
 	findOnePost,
-	updatePost
+	updatePost,
 }

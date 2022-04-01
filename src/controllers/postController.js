@@ -1,19 +1,20 @@
+import { getUrl } from '../services/api.urlMetadata.js'
+
 import * as likeController from './likeController.js'
+import { createInsertHashtag } from './hashtagController.js'
 
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
-import { getUrl } from '../services/api.urlMetadata.js'
-import { createInsertHashtag } from './hashtagController.js'
+
+import { makeHashtagList } from '../helpers/hashtagHelper.js'
+
 
 async function createPost(req, res, next) {
 	const postInfo = req.body
 	const userId = res.locals.userId
 	const info = await getUrl(postInfo.link)
 
-	let hashtags = []
-	if (postInfo.message !== '') {
-		hashtags = postInfo.message?.match(/#[a-záàâãéèêíïóôõöúçñA-ZÁÀÂÃÉÈÊÍÓÔÕÚÇÑ0-9]+/gi)
-	}
+	const hashtags = makeHashtagList(postInfo.message)
 
 	try {
 		const postResult = await postRepository.createPost(info.url, info.title, info.description, info.image, userId, postInfo.message)
@@ -23,17 +24,22 @@ async function createPost(req, res, next) {
 			createInsertHashtag(hashtags, postId)
 		}
 
+		return res.status(201).send('Post created!')
+
 	} catch (error) {
 		next(error)
 	}
-	res.status(201).send('Created')
 }
 
 async function getTimelinePosts(req, res, next) {
-	const POSTS_LIMIT = 20
+	const { locals: { userId } } = res
+	const POSTS_LIMIT = 10
 
 	try {
-		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		const postList = await postRepository.findTimelinePosts({
+			limit: POSTS_LIMIT,
+			searcherId: userId,
+		})
 		
 		const likesPostsList = await likeController.getLikesPosts({ postList })
 
@@ -64,19 +70,16 @@ async function updatePost(req, res, next) {
 	const { message } = req.body
 	const isUpdate = true
 
-	let hashtags = []
-	if (message !== '') {
-		hashtags = message?.match(/#[a-z]+/gi)
-	}
-
 	try {
+		const hashtags = makeHashtagList(message)
+		
 		const { rows: [post] } = await postRepository.findOnePost(id)
 
 		if(!post) {
 			return res.sendStatus(404)
 		}
 		if(post.userId != res.locals.userId) {
-			return res.sendStatus(422)
+			return res.sendStatus(401)
 		}
 
 		await postRepository.updatePost(id, message)
@@ -98,5 +101,5 @@ export {
 	createPost, 
 	getTimelinePosts, 
 	deletePost,
-	updatePost
+	updatePost,
 }
