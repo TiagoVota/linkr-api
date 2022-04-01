@@ -1,6 +1,24 @@
 import connection from '../database/database.js'
 
 
+const findUserFollows = async ({ id }) => {
+	const queryStr = `
+		SELECT
+			*
+		FROM
+			followers
+		WHERE
+			"userId" = $1;
+	`
+	const queryArgs = [id]
+
+	const followerResult = await connection.query(queryStr, queryArgs)
+	if (followerResult.rowCount === 0) return null
+
+	return followerResult.rows
+}
+
+
 const findUserFollowByFollowerId = async ({ followId, followerId }) => {
 	const queryStr = `
 		SELECT
@@ -53,6 +71,7 @@ const deleteFollow = async ({ followId, followerId }) => {
 
 
 export {
+	findUserFollows,
 	findUserFollowByFollowerId,
 	insertFollow,
 	deleteFollow,

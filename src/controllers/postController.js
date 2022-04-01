@@ -3,6 +3,7 @@ import { getUrl } from '../services/api.urlMetadata.js'
 import * as likeController from './likeController.js'
 import { createInsertHashtag } from './hashtagController.js'
 
+import * as followRepository from '../repositories/followRepository.js'
 import { hashtagRepository } from '../repositories/hashtagRepository.js'
 import { postRepository } from '../repositories/postRepository.js'
 
@@ -36,13 +37,21 @@ async function getTimelinePosts(req, res, next) {
 	const POSTS_LIMIT = 10
 
 	try {
+		const userFollow = await followRepository.findUserFollows({ id: userId })
+		
 		const postList = await postRepository.findTimelinePosts({
 			limit: POSTS_LIMIT,
 			searcherId: userId,
 		})
 		
-		const likesPostsList = await likeController.getLikesPosts({ postList })
+		const noFollows = Boolean(userFollow === null)
+		const NoPosts = Boolean(postList.length === 0)
+		if (noFollows && NoPosts) {
+			return res.status(200).send('The user has no follows!')
+		}
 
+		const likesPostsList = await likeController.getLikesPosts({ postList })
+		
 		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
