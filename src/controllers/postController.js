@@ -30,10 +30,12 @@ async function createPost(req, res, next) {
 }
 
 async function getTimelinePosts(req, res, next) {
-	const POSTS_LIMIT = 20
+	console.log(req.query)
+	const OFFSET = req.query.offset
+	const POSTS_LIMIT = 10
 
 	try {
-		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT })
+		const postList = await postRepository.findPosts({ limit: POSTS_LIMIT, offset: OFFSET })
 		
 		const likesPostsList = await likeController.getLikesPosts({ postList })
 

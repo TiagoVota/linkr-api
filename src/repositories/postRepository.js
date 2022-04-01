@@ -24,7 +24,7 @@ async function createPost(url, title, description, image, userId, message) {
 	return result
 }
 
-const findPosts = async ({ limit }) => {
+const findPosts = async ({ limit, offset }) => {
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -43,7 +43,9 @@ const findPosts = async ({ limit }) => {
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
-			${limit};
+			${limit}
+		OFFSET
+			${offset};
 	`
 
 	const postsResult = await connection.query(queryStr)
