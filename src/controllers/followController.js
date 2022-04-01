@@ -8,8 +8,6 @@ async function followUser(req, res, next) {
 	const { body: { followId } } = req
 	const { locals: { userId } } = res
 
-	console.log({ toFollowId: followId, followerId: userId })
-
 	try {
 		const existentFollow = await followRepository.findUserFollowByFollowerId({
 			followId,
@@ -33,8 +31,6 @@ async function followUser(req, res, next) {
 async function unfollowUser(req, res, next) {
 	const { params: { unfollowId } } = req
 	const { locals: { userId } } = res
-
-	console.log({ toUnfollowId: unfollowId, followerId: userId })
 
 	try {
 		const existentFollow = await followRepository.findUserFollowByFollowerId({

@@ -45,6 +45,9 @@ const findTimelinePosts = async ({ searcherId, limit }) => {
 				f."followingId" = u.id
 				AND f."userId" = $1
 			)
+		WHERE
+			u.id = $1
+			OR "isFollowing"(f."userId") IS TRUE
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
