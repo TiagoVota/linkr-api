@@ -8,9 +8,9 @@ const router = new Router()
 
 router.use(authMiddleware)
 
-router.post('/follow', followController.followUser)
+router.post('', followController.followUser)
 
-router.delete('/unfollow/:unfollowId', followController.unfollowUser)
+router.delete('/:unfollowId', followController.unfollowUser)
 
 
 export default router

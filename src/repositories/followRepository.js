@@ -1,7 +1,7 @@
 import connection from '../database/database.js'
 
 
-const findUserFollowerByFollowerId = async ({ followId, followerId }) => {
+const findUserFollowByFollowerId = async ({ followId, followerId }) => {
 	const queryStr = `
 		SELECT
 			*
@@ -53,7 +53,7 @@ const deleteFollow = async ({ followId, followerId }) => {
 
 
 export {
-	findUserFollowerByFollowerId,
+	findUserFollowByFollowerId,
 	insertFollow,
 	deleteFollow,
 }
