@@ -24,7 +24,7 @@ async function createPost(url, title, description, image, userId, message) {
 	return result
 }
 
-const findTimelinePosts = async ({ searcherId, limit }) => {
+const findTimelinePosts = async ({ searcherId, limit, offset }) => {
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -51,7 +51,9 @@ const findTimelinePosts = async ({ searcherId, limit }) => {
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
-			${limit};
+			${limit}
+		OFFSET
+			${offset};
 	`
 	const queryArgs = [searcherId]
 

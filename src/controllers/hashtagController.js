@@ -57,6 +57,7 @@ async function selectHashtag(req, res, next) {
 	const { locals: { userId } } = res
 	const { id: hashtag } = req.params
 	const hashtagName = '#' + hashtag
+	const OFFSET = req.query.offset
 	const POST_LIMIT = 10
 
 	try {
@@ -64,6 +65,7 @@ async function selectHashtag(req, res, next) {
 			searcherId: userId,
 			name: hashtagName,
 			limit: POST_LIMIT,
+			offset: OFFSET
 		})
 
 		const likesPostsList = await likeController.getLikesPosts({ postList })

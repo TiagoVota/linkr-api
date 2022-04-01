@@ -47,7 +47,7 @@ async function findUser(id) {
 	return result.rowCount
 }
 
-async function getUserPosts({ searcherId, userId }) {
+async function getUserPosts({ searcherId, userId, offset }) {
 	const queryStr = `
 		SELECT
 			u.username,
@@ -72,7 +72,10 @@ async function getUserPosts({ searcherId, userId }) {
 			u.id = $2
 		ORDER BY
 			p."createDate" DESC
-		LIMIT 20;
+		LIMIT 
+				10
+		OFFSET
+			${offset};
 	`
 
 	const queryArgs = [searcherId, userId]

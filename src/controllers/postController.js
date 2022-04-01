@@ -35,13 +35,15 @@ async function createPost(req, res, next) {
 async function getTimelinePosts(req, res, next) {
 	const { locals: { userId } } = res
 	const POSTS_LIMIT = 10
+	const OFFSET = req.query.offset
 
 	try {
 		const userFollow = await followRepository.findUserFollows({ id: userId })
 		
 		const postList = await postRepository.findTimelinePosts({
-			limit: POSTS_LIMIT,
 			searcherId: userId,
+			limit: POSTS_LIMIT,
+			offset: OFFSET
 		})
 		
 		const noFollows = Boolean(userFollow === null)
