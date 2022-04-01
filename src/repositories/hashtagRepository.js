@@ -145,10 +145,10 @@ async function getHashtagPosts({ searcherId, name, limit, offset }){
 			h.name ILIKE $2
 		ORDER BY
 			p."createDate" DESC
-			LIMIT
-				${limit}
-			OFFSET
-				${offset};
+		LIMIT
+			${limit}
+		OFFSET
+			${offset};
 	`
 	const queryArgs = [searcherId, name]
 	
