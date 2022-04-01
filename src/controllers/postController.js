@@ -30,7 +30,6 @@ async function createPost(req, res, next) {
 }
 
 async function getTimelinePosts(req, res, next) {
-	console.log(req.query)
 	const OFFSET = req.query.offset
 	const POSTS_LIMIT = 10
 

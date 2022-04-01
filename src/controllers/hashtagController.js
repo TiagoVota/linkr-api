@@ -56,12 +56,14 @@ async function getTrendingHashtags(req, res, next) {
 async function selectHashtag(req, res, next) {
 	const { id: hashtag } = req.params
 	const hashtagName = '#' + hashtag
+	const OFFSET = req.query.offset
 	const POST_LIMIT = 10
 
 	try {
 		const postList = await hashtagRepository.getHashtag({
 			name: hashtagName,
-			limit: POST_LIMIT
+			limit: POST_LIMIT,
+			offset: OFFSET
 		})
 
 		const likesPostsList = await likeController.getLikesPosts({ postList })

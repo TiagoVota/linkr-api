@@ -117,7 +117,7 @@ async function getHashtags() {
 	return result.rows
 }
 
-async function getHashtag({ name, limit }){
+async function getHashtag({ name, limit, offset }){
 	const queryStr = `
 		SELECT
 			p.id AS "postId",
@@ -140,7 +140,9 @@ async function getHashtag({ name, limit }){
 		ORDER BY
 			p."createDate" DESC
 		LIMIT
-			${limit};
+			${limit}
+		OFFSET
+			${offset};
 	`
 	const queryArgs = [name]
 	
