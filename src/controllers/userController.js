@@ -50,7 +50,6 @@ export async function getUserPosts(req, res, next) {
 		return res.status(200).send(likesPostsList)
 
 	} catch (error) {
-		console.log(error)
 		next(error)
 	}
 }
