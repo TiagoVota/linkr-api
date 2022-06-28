@@ -43,6 +43,7 @@ Linkr API é voltado a uma rede social, cujo propósito  é muito mais interessa
 	- [✔️ Tabela de conteúdo](#️-tabela-de-conteúdo)
 	- [🖥 Tecnologias](#-tecnologias)
 	- [⚙ Como usar](#-como-usar)
+		- [Instalando o app](#instalando-o-app)
 		- [Instalando a API](#instalando-a-api)
 		- [Criando database](#criando-database)
 		- [Preparando setup](#preparando-setup)
@@ -94,6 +95,9 @@ Para utilizar essa API, será necessário ter nas suas máquina as seguintes fer
 [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) e [PostgreSQL](https://www.postgresql.org/). 
 Além disso recomendo fortemente a utilização de um bom ter um editor de código, como o [VSCode](https://code.visualstudio.com/)!
 
+
+### Instalando o app
+Seguir os passos descritos na seção de [instalação do app](https://github.com/TiagoVota/linkr/blob/main/README.md).
 
 ### Instalando a API
 ```bash
