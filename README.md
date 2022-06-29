@@ -6,7 +6,7 @@ Sabe aquele link que não basta deixar salvo nos favoritos? Vem com Linkr e bora
 
 
 ## 🔍 Sobre
-Linkr API é voltado a uma rede social, cujo propósito  é muito mais interessante que qualquer uma: com ele você poderá compartilhar links com o mundo! Só fazer seu cadastro e que comece a aventura! Nele você poderá criar seu link, compartilhar para os amigos que você segue ou para todos os que buscarem por ti. Ah, mas não se esquença de colocar um hashtag na descrição de seu link, assim você poderá ter mais visualizações em suas postagens, e quem sabe seu hashtag entre em nosso trending global 🤩. Nessa APi, podemos encontrar as seguintes funcionalidades:
+Linkr API é voltado a uma rede social, cujo propósito  é muito mais interessante que qualquer uma: com ele você poderá compartilhar links com o mundo! Só fazer seu cadastro e que comece a aventura! Nele você poderá criar seu link, compartilhar para os amigos que você segue ou para todos os que buscarem por ti. Ah, mas não se esqueça de colocar um hashtag na descrição de seu link, assim você poderá ter mais visualizações em suas postagens, e quem sabe seu hashtag entre em nosso trending global 🤩. Nessa APi, podemos encontrar as seguintes funcionalidades:
 
 ### Features
 - [x] [`Verificar se o server está funcionando`](#get-health)
@@ -91,7 +91,7 @@ Linkr API é voltado a uma rede social, cujo propósito  é muito mais interessa
 
 ## ⚙ Como usar
 
-Para utilizar essa API, será necessário ter nas suas máquina as seguintes ferramentas:
+Para utilizar essa API, será necessário ter na sua máquina as seguintes ferramentas:
 [Git](https://git-scm.com), [Node.js](https://nodejs.org/en/) e [PostgreSQL](https://www.postgresql.org/). 
 Além disso recomendo fortemente a utilização de um bom ter um editor de código, como o [VSCode](https://code.visualstudio.com/)!
 
@@ -137,7 +137,7 @@ Na pasta principal da API, crie um arquivo `.env.dev` aos mesmos moldes do arqui
 # Execute a aplicação em modo de desenvolvimento
 npm run start:dev
 
-# O servidor inciará na porta:PORT (escolhida no arquivo .env) - acesse http://localhost:PORT 
+# O servidor iniciará na porta:PORT (escolhida no arquivo .env) - acesse http://localhost:PORT 
 
 ```
 
